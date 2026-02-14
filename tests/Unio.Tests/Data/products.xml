@@ -1,0 +1,75 @@
+<?xml version="1.0" ?>
+<Products>
+  <Product>
+    <ProductId>PRD-001</ProductId>
+    <Name>Wireless Keyboard</Name>
+    <Category>Electronics</Category>
+    <Price>49.99</Price>
+    <Quantity>150</Quantity>
+    <InStock>True</InStock>
+    <Rating>4.5</Rating>
+  </Product>
+  <Product>
+    <ProductId>PRD-002</ProductId>
+    <Name>USB-C Hub</Name>
+    <Category>Electronics</Category>
+    <Price>35.5</Price>
+    <Quantity>300</Quantity>
+    <InStock>True</InStock>
+    <Rating>4.2</Rating>
+  </Product>
+  <Product>
+    <ProductId>PRD-003</ProductId>
+    <Name>Standing Desk</Name>
+    <Category>Furniture</Category>
+    <Price>599.0</Price>
+    <Quantity>25</Quantity>
+    <InStock>True</InStock>
+    <Rating>4.8</Rating>
+  </Product>
+  <Product>
+    <ProductId>PRD-004</ProductId>
+    <Name>Noise Cancelling Headphones</Name>
+    <Category>Electronics</Category>
+    <Price>189.99</Price>
+    <Quantity>0</Quantity>
+    <InStock>False</InStock>
+    <Rating>4.7</Rating>
+  </Product>
+  <Product>
+    <ProductId>PRD-005</ProductId>
+    <Name>Ergonomic Mouse</Name>
+    <Category>Electronics</Category>
+    <Price>69.99</Price>
+    <Quantity>200</Quantity>
+    <InStock>True</InStock>
+    <Rating>4.3</Rating>
+  </Product>
+  <Product>
+    <ProductId>PRD-006</ProductId>
+    <Name>Monitor Light Bar</Name>
+    <Category>Lighting</Category>
+    <Price>45.0</Price>
+    <Quantity>80</Quantity>
+    <InStock>True</InStock>
+    <Rating>4.1</Rating>
+  </Product>
+  <Product>
+    <ProductId>PRD-007</ProductId>
+    <Name>Laptop Stand</Name>
+    <Category>Furniture</Category>
+    <Price>79.99</Price>
+    <Quantity>0</Quantity>
+    <InStock>False</InStock>
+    <Rating>3.9</Rating>
+  </Product>
+  <Product>
+    <ProductId>PRD-008</ProductId>
+    <Name>Mechanical Keyboard</Name>
+    <Category>Electronics</Category>
+    <Price>129.0</Price>
+    <Quantity>45</Quantity>
+    <InStock>True</InStock>
+    <Rating>4.6</Rating>
+  </Product>
+</Products>

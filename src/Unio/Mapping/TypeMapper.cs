@@ -55,15 +55,18 @@ namespace Unio.Mapping {
 		private static PropertyMapping[] BuildMappings(string[]? headers) {
 			var properties = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance)
 				.Where(p => p.CanWrite)
-				.Where(p => p.GetCustomAttribute<IgnoreAttribute>() is null);
+				.Where(p => p.GetCustomAttribute<IgnoreAttribute>() is null)
+				.ToArray();
 
 			var mappings = new List<PropertyMapping>();
+			int autoIndex = 0;
 
 			foreach (var prop in properties) {
-				var mapping = CreatePropertyMapping(prop, headers);
+				var mapping = CreatePropertyMapping(prop, headers, autoIndex);
 				if (mapping is not null) {
 					mappings.Add(mapping);
 				}
+				autoIndex++;
 			}
 
 			return mappings.ToArray();
@@ -75,11 +78,11 @@ namespace Unio.Mapping {
 		/// <param name="prop"></param>
 		/// <param name="headers"></param>
 		/// <returns></returns>
-		private static PropertyMapping? CreatePropertyMapping(PropertyInfo prop, string[]? headers) {
+		private static PropertyMapping? CreatePropertyMapping(PropertyInfo prop, string[]? headers, int autoIndex) {
 			var colAttr = prop.GetCustomAttribute<ColumnAttribute>();
 			var dateAttr = prop.GetCustomAttribute<DateFormatAttribute>();
 
-			var (index, name) = ResolveColumnIndexAndName(prop, colAttr, headers);
+			var (index, name) = ResolveColumnIndexAndName(prop, colAttr, headers, autoIndex);
 
 			if (index < 0)
 				return null;
@@ -99,7 +102,7 @@ namespace Unio.Mapping {
 		/// <param name="colAttr"></param>
 		/// <param name="headers"></param>
 		/// <returns></returns>
-		private static (int index, string? name) ResolveColumnIndexAndName(PropertyInfo prop, ColumnAttribute? colAttr, string[]? headers) {
+		private static (int index, string? name) ResolveColumnIndexAndName(PropertyInfo prop, ColumnAttribute? colAttr, string[]? headers, int autoIndex) {
 			int index = -1;
 			string? name = null;
 
@@ -117,6 +120,11 @@ namespace Unio.Mapping {
 				// Convention: match property name to header (case-insensitive)
 				name = prop.Name;
 				index = FindHeaderIndex(headers, prop.Name);
+			}
+			else {
+				// No headers, no attribute — map by property declaration order
+				index = autoIndex;
+				name = prop.Name;
 			}
 
 			return (index, name);

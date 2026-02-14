@@ -1,0 +1,7 @@
+Id,Name,Notes,Value,Empty,Date
+1,"O'Brien, James","He said ""hello, world""",0,,2025-12-31
+2,José García,"Line1
+Line2",-99.5,,2025-01-01
+3,田中太郎,Unicode test: émojis 🎉,1000000,,1999-12-31
+4,,,0.001,,2000-01-01
+5,   Spaces   ,Tabs	here,-0.5,,2025-06-15

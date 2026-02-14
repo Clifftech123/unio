@@ -1,0 +1,74 @@
+[
+  {
+    "ProductId": "PRD-001",
+    "Name": "Wireless Keyboard",
+    "Category": "Electronics",
+    "Price": 49.99,
+    "Quantity": 150,
+    "InStock": true,
+    "Rating": 4.5
+  },
+  {
+    "ProductId": "PRD-002",
+    "Name": "USB-C Hub",
+    "Category": "Electronics",
+    "Price": 35.5,
+    "Quantity": 300,
+    "InStock": true,
+    "Rating": 4.2
+  },
+  {
+    "ProductId": "PRD-003",
+    "Name": "Standing Desk",
+    "Category": "Furniture",
+    "Price": 599.0,
+    "Quantity": 25,
+    "InStock": true,
+    "Rating": 4.8
+  },
+  {
+    "ProductId": "PRD-004",
+    "Name": "Noise Cancelling Headphones",
+    "Category": "Electronics",
+    "Price": 189.99,
+    "Quantity": 0,
+    "InStock": false,
+    "Rating": 4.7
+  },
+  {
+    "ProductId": "PRD-005",
+    "Name": "Ergonomic Mouse",
+    "Category": "Electronics",
+    "Price": 69.99,
+    "Quantity": 200,
+    "InStock": true,
+    "Rating": 4.3
+  },
+  {
+    "ProductId": "PRD-006",
+    "Name": "Monitor Light Bar",
+    "Category": "Lighting",
+    "Price": 45.0,
+    "Quantity": 80,
+    "InStock": true,
+    "Rating": 4.1
+  },
+  {
+    "ProductId": "PRD-007",
+    "Name": "Laptop Stand",
+    "Category": "Furniture",
+    "Price": 79.99,
+    "Quantity": 0,
+    "InStock": false,
+    "Rating": 3.9
+  },
+  {
+    "ProductId": "PRD-008",
+    "Name": "Mechanical Keyboard",
+    "Category": "Electronics",
+    "Price": 129.0,
+    "Quantity": 45,
+    "InStock": true,
+    "Rating": 4.6
+  }
+]
