@@ -1,0 +1,52 @@
+[
+  {
+    "InvoiceNo": "INV-001",
+    "Customer": "Accra Tech Ltd",
+    "Date": "2025-01-15",
+    "Amount": 12500.0,
+    "Tax": 1562.5,
+    "Total": 14062.5,
+    "Status": "Paid",
+    "DueDate": "2025-02-15"
+  },
+  {
+    "InvoiceNo": "INV-002",
+    "Customer": "Kumasi Solutions",
+    "Date": "2025-01-22",
+    "Amount": 8750.0,
+    "Tax": 1093.75,
+    "Total": 9843.75,
+    "Status": "Pending",
+    "DueDate": "2025-02-22"
+  },
+  {
+    "InvoiceNo": "INV-003",
+    "Customer": "Takoradi Imports",
+    "Date": "2025-02-01",
+    "Amount": 23000.0,
+    "Tax": 2875.0,
+    "Total": 25875.0,
+    "Status": "Paid",
+    "DueDate": "2025-03-01"
+  },
+  {
+    "InvoiceNo": "INV-004",
+    "Customer": "Cape Coast Digital",
+    "Date": "2025-02-10",
+    "Amount": 5200.0,
+    "Tax": 650.0,
+    "Total": 5850.0,
+    "Status": "Overdue",
+    "DueDate": "2025-03-10"
+  },
+  {
+    "InvoiceNo": "INV-005",
+    "Customer": "Tamale Enterprises",
+    "Date": "2025-02-14",
+    "Amount": 18900.0,
+    "Tax": 2362.5,
+    "Total": 21262.5,
+    "Status": "Pending",
+    "DueDate": "2025-03-14"
+  }
+]

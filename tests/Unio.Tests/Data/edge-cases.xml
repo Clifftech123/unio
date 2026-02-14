@@ -1,0 +1,44 @@
+<?xml version="1.0" ?>
+<Records>
+  <Record>
+    <Id>1</Id>
+    <Name>O'Brien, James</Name>
+    <Notes>He said &quot;hello, world&quot;</Notes>
+    <Value>0</Value>
+    <Empty/>
+    <Date>2025-12-31</Date>
+  </Record>
+  <Record>
+    <Id>2</Id>
+    <Name>José García</Name>
+    <Notes>Line1
+Line2</Notes>
+    <Value>-99.5</Value>
+    <Empty/>
+    <Date>2025-01-01</Date>
+  </Record>
+  <Record>
+    <Id>3</Id>
+    <Name>田中太郎</Name>
+    <Notes>Unicode test: émojis 🎉</Notes>
+    <Value>1000000</Value>
+    <Empty/>
+    <Date>1999-12-31</Date>
+  </Record>
+  <Record>
+    <Id>4</Id>
+    <Name/>
+    <Notes/>
+    <Value>0.001</Value>
+    <Empty/>
+    <Date>2000-01-01</Date>
+  </Record>
+  <Record>
+    <Id>5</Id>
+    <Name>   Spaces   </Name>
+    <Notes>Tabs	here</Notes>
+    <Value>-0.5</Value>
+    <Empty/>
+    <Date>2025-06-15</Date>
+  </Record>
+</Records>

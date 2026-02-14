@@ -1,0 +1,92 @@
+[
+  {
+    "Id": 1,
+    "Name": "Kwame Asante",
+    "Department": "Engineering",
+    "Salary": 85000.5,
+    "StartDate": "2021-03-15",
+    "IsActive": true,
+    "Email": "kwame@unio.dev"
+  },
+  {
+    "Id": 2,
+    "Name": "Ama Mensah",
+    "Department": "Marketing",
+    "Salary": 72000.0,
+    "StartDate": "2020-07-22",
+    "IsActive": true,
+    "Email": "ama@unio.dev"
+  },
+  {
+    "Id": 3,
+    "Name": "Yaw Boateng",
+    "Department": "Engineering",
+    "Salary": 91000.75,
+    "StartDate": "2019-11-01",
+    "IsActive": true,
+    "Email": "yaw@unio.dev"
+  },
+  {
+    "Id": 4,
+    "Name": "Efua Owusu",
+    "Department": "Finance",
+    "Salary": 68000.25,
+    "StartDate": "2022-01-10",
+    "IsActive": false,
+    "Email": "efua@unio.dev"
+  },
+  {
+    "Id": 5,
+    "Name": "Kofi Darko",
+    "Department": "Engineering",
+    "Salary": 95000.0,
+    "StartDate": "2018-05-30",
+    "IsActive": true,
+    "Email": "kofi@unio.dev"
+  },
+  {
+    "Id": 6,
+    "Name": "Adwoa Poku",
+    "Department": "HR",
+    "Salary": 64000.0,
+    "StartDate": "2023-02-14",
+    "IsActive": true,
+    "Email": "adwoa@unio.dev"
+  },
+  {
+    "Id": 7,
+    "Name": "Kwesi Appiah",
+    "Department": "Marketing",
+    "Salary": 77500.5,
+    "StartDate": "2020-09-18",
+    "IsActive": false,
+    "Email": "kwesi@unio.dev"
+  },
+  {
+    "Id": 8,
+    "Name": "Akua Adjei",
+    "Department": "Finance",
+    "Salary": 82000.0,
+    "StartDate": "2021-06-05",
+    "IsActive": true,
+    "Email": "akua@unio.dev"
+  },
+  {
+    "Id": 9,
+    "Name": "Nana Osei",
+    "Department": "Engineering",
+    "Salary": 105000.0,
+    "StartDate": "2017-08-20",
+    "IsActive": true,
+    "Email": "nana@unio.dev"
+  },
+  {
+    "Id": 10,
+    "Name": "Abena Frimpong",
+    "Department": "HR",
+    "Salary": 59000.75,
+    "StartDate": "2023-11-28",
+    "IsActive": true,
+    "Email": "abena@unio.dev"
+  }
+]

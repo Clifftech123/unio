@@ -1,0 +1,9 @@
+ProductId,Name,Category,Price,Quantity,InStock,Rating
+PRD-001,Wireless Keyboard,Electronics,49.99,150,True,4.5
+PRD-002,USB-C Hub,Electronics,35.5,300,True,4.2
+PRD-003,Standing Desk,Furniture,599.0,25,True,4.8
+PRD-004,Noise Cancelling Headphones,Electronics,189.99,0,False,4.7
+PRD-005,Ergonomic Mouse,Electronics,69.99,200,True,4.3
+PRD-006,Monitor Light Bar,Lighting,45.0,80,True,4.1
+PRD-007,Laptop Stand,Furniture,79.99,0,False,3.9
+PRD-008,Mechanical Keyboard,Electronics,129.0,45,True,4.6

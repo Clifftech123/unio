@@ -7,6 +7,7 @@ namespace Unio.Csv;
 
 /// <summary>
 /// High-performance CSV extractor with streaming support.
+/// RFC 4180 compliant — handles multiline quoted fields.
 /// Zero external dependencies.
 /// </summary>
 public class CsvExtractor : IDataExtractor {
@@ -32,11 +33,8 @@ public class CsvExtractor : IDataExtractor {
 		int rowIndex = 0;
 		int dataRowIndex = 0;
 
-		while (reader.ReadLine() is { } line) {
-			if (rowIndex < options.StartRow) {
-				rowIndex++;
-				continue;
-			}
+		while (ReadLogicalLine(reader) is { } line) {
+			if (rowIndex < options.StartRow) { rowIndex++; continue; }
 
 			var fields = ParseLine(line, delimiter);
 
@@ -70,7 +68,7 @@ public class CsvExtractor : IDataExtractor {
 		int rowIndex = 0;
 		int dataRowIndex = 0;
 
-		while (reader.ReadLine() is { } line) {
+		while (ReadLogicalLine(reader) is { } line) {
 			if (rowIndex < options.StartRow) { rowIndex++; continue; }
 
 			var fields = ParseLine(line, delimiter);
@@ -111,7 +109,7 @@ public class CsvExtractor : IDataExtractor {
 		int rowIndex = 0;
 		int dataRowIndex = 0;
 
-		while (await reader.ReadLineAsync(cancellationToken) is { } line) {
+		while (await ReadLogicalLineAsync(reader, cancellationToken) is { } line) {
 			cancellationToken.ThrowIfCancellationRequested();
 
 			if (rowIndex < options.StartRow) { rowIndex++; continue; }
@@ -138,35 +136,77 @@ public class CsvExtractor : IDataExtractor {
 	}
 
 	/// <summary>
-	/// Resolves the delimiter: explicit option > auto-detect from first line > default comma.
+	/// Reads a complete logical CSV row, joining multiple physical lines
+	/// when a quoted field contains embedded newlines (RFC 4180).
 	/// </summary>
+	private static string? ReadLogicalLine(StreamReader reader) {
+		var first = reader.ReadLine();
+		if (first is null) return null;
+
+		int quoteCount = 0;
+		foreach (char c in first) {
+			if (c == '"') quoteCount++;
+		}
+		if (quoteCount % 2 == 0) return first;
+
+		var sb = new StringBuilder(first);
+		while (true) {
+			var next = reader.ReadLine();
+			if (next is null) break;
+			sb.Append('\n').Append(next);
+			foreach (char c in next) {
+				if (c == '"') quoteCount++;
+			}
+			if (quoteCount % 2 == 0) break;
+		}
+		return sb.ToString();
+	}
+
+	/// <summary>
+	/// Async version of ReadLogicalLine.
+	/// </summary>
+	private static async Task<string?> ReadLogicalLineAsync(StreamReader reader, CancellationToken ct) {
+		var first = await reader.ReadLineAsync(ct);
+		if (first is null) return null;
+
+		int quoteCount = 0;
+		foreach (char c in first) {
+			if (c == '"') quoteCount++;
+		}
+		if (quoteCount % 2 == 0) return first;
+
+		var sb = new StringBuilder(first);
+		while (true) {
+			var next = await reader.ReadLineAsync(ct);
+			if (next is null) break;
+			sb.Append('\n').Append(next);
+			foreach (char c in next) {
+				if (c == '"') quoteCount++;
+			}
+			if (quoteCount % 2 == 0) break;
+		}
+		return sb.ToString();
+	}
+
 	private static char ResolveDelimiter(ExtractionOptions options) {
 		return options.Delimiter ?? ',';
 	}
 
-	/// <summary>
-	/// Sniffs the delimiter from the first line of a stream.
-	/// Resets position after sniffing. Falls back to comma.
-	/// </summary>
 	internal static char SniffDelimiter(Stream stream) {
 		if (!stream.CanSeek) return ',';
-
 		var pos = stream.Position;
 		using var reader = new StreamReader(stream, Encoding.UTF8, leaveOpen: true);
 		var firstLine = reader.ReadLine();
 		stream.Position = pos;
-
 		if (firstLine is null) return ',';
-
 		int tabs = firstLine.Count(c => c == '\t');
 		int commas = firstLine.Count(c => c == ',');
-
 		return tabs > commas ? '\t' : ',';
 	}
 
 	/// <summary>
 	/// RFC 4180 compliant CSV line parser. Handles quoted fields, escaped quotes,
-	/// and embedded delimiters.
+	/// embedded delimiters, and embedded newlines.
 	/// </summary>
 	internal static string[] ParseLine(string line, char delimiter) {
 		var fields = new List<string>();
@@ -183,24 +223,19 @@ public class CsvExtractor : IDataExtractor {
 						field.Append('"');
 						i += 2;
 						continue;
-					}
-					else {
+					} else {
 						inQuotes = false;
 					}
-				}
-				else {
+				} else {
 					field.Append(c);
 				}
-			}
-			else {
+			} else {
 				if (c == '"') {
 					inQuotes = true;
-				}
-				else if (c == delimiter) {
+				} else if (c == delimiter) {
 					fields.Add(field.ToString());
 					field.Clear();
-				}
-				else {
+				} else {
 					field.Append(c);
 				}
 			}

@@ -1,0 +1,42 @@
+[
+  {
+    "Id": 1,
+    "Name": "O'Brien, James",
+    "Notes": "He said \"hello, world\"",
+    "Value": 0,
+    "Empty": "",
+    "Date": "2025-12-31"
+  },
+  {
+    "Id": 2,
+    "Name": "José García",
+    "Notes": "Line1\nLine2",
+    "Value": -99.5,
+    "Empty": "",
+    "Date": "2025-01-01"
+  },
+  {
+    "Id": 3,
+    "Name": "田中太郎",
+    "Notes": "Unicode test: émojis 🎉",
+    "Value": 1000000,
+    "Empty": "",
+    "Date": "1999-12-31"
+  },
+  {
+    "Id": 4,
+    "Name": "",
+    "Notes": "",
+    "Value": 0.001,
+    "Empty": "",
+    "Date": "2000-01-01"
+  },
+  {
+    "Id": 5,
+    "Name": "   Spaces   ",
+    "Notes": "Tabs\there",
+    "Value": -0.5,
+    "Empty": "",
+    "Date": "2025-06-15"
+  }
+]
