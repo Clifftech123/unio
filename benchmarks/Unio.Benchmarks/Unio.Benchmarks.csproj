@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BenchmarkDotNet" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Unio\Unio.csproj" />
+    <ProjectReference Include="..\..\src\Unio.Excel\Unio.Excel.csproj" />
+    <ProjectReference Include="..\..\src\Unio.Pdf\Unio.Pdf.csproj" />
+    <ProjectReference Include="..\..\src\Unio.Json\Unio.Json.csproj" />
+    <ProjectReference Include="..\..\src\Unio.Xml\Unio.Xml.csproj" />
+    <ProjectReference Include="..\..\src\Unio.Validation\Unio.Validation.csproj" />
+  </ItemGroup>
+
+</Project>
