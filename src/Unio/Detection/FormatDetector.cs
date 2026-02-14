@@ -1,9 +1,11 @@
 
 
-namespace Unio.Detection {/// <summary>
-						  /// Detects file format by extension and magic bytes.
-						  /// </summary>
-	public static class FormatDetector {
+namespace Unio.Detection {
+
+/// <summary>
+/// Detects file format by extension and magic bytes.
+/// </summary>
+public static class FormatDetector {
 		// Magic bytes signatures
 		private static readonly byte[] ZipSignature = { 0x50, 0x4B, 0x03, 0x04 };  // PK.. (XLSX, XLSB)
 		private static readonly byte[] OleSignature = { 0xD0, 0xCF, 0x11, 0xE0 };  // XLS (OLE2)

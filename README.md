@@ -15,10 +15,11 @@ Reading an Excel file requires one library. CSV needs another. PDF tables need a
 Unio gives you **one API** for all of them:
 
 ```csharp
-var invoices = Unio.Extract<Invoice>("invoices.xlsx");
-var invoices = Unio.Extract<Invoice>("invoices.csv");
-var invoices = Unio.Extract<Invoice>("invoices.pdf");
-var invoices = Unio.Extract<Invoice>("invoices.json");
+var unio = new Unio();
+var invoices = unio.Extract<Invoice>("invoices.xlsx");
+var invoices = unio.Extract<Invoice>("invoices.csv");
+var invoices = unio.Extract<Invoice>("invoices.pdf");
+var invoices = unio.Extract<Invoice>("invoices.json");
 ```
 
 Same call. Same result. Format is auto-detected.
@@ -65,7 +66,8 @@ public class Invoice
 
 ```csharp
 // From any supported format -- auto-detected
-var invoices = Unio.Extract<Invoice>("invoices.xlsx");
+var unio = new Unio();
+var invoices = unio.Extract<Invoice>("invoices.xlsx");
 ```
 
 ### Stream large files
@@ -73,7 +75,8 @@ var invoices = Unio.Extract<Invoice>("invoices.xlsx");
 Process millions of rows without loading everything into memory:
 
 ```csharp
-await foreach (var invoice in Unio.ExtractAsync<Invoice>("huge-file.xlsx"))
+var unio = new Unio();
+await foreach (var invoice in unio.ExtractAsync<Invoice>("huge-file.xlsx"))
 {
     await ProcessAsync(invoice);
 }
@@ -84,13 +87,15 @@ await foreach (var invoice in Unio.ExtractAsync<Invoice>("huge-file.xlsx"))
 No model? No problem:
 
 ```csharp
-var rows = Unio.Extract("data.csv"); // IEnumerable<dynamic>
+var unio = new Unio();
+var rows = unio.Extract("data.csv"); // IEnumerable<dynamic>
 ```
 
 ### Configure extraction
 
 ```csharp
-var records = Unio.Extract<Invoice>("data.xlsx", opt =>
+var unio = new Unio();
+var records = unio.Extract<Invoice>("data.xlsx", opt =>
 {
     opt.SheetName = "Sheet2";
     opt.StartRow = 3;
@@ -125,12 +130,12 @@ public class ReportService(IUnioExtractor extractor)
 
 | Package | Format | External Dependencies |
 |:---|:---|:---|
-| `Unio` | CSV | None |
+| `Unio` | CSV | None (+ `Microsoft.Extensions.DependencyInjection.Abstractions`) |
 | `Unio.Excel` | XLSX, XLS | [DocumentFormat.OpenXml](https://www.nuget.org/packages/DocumentFormat.OpenXml) |
-| `Unio.Pdf` | PDF tables | [PdfPig](https://www.nuget.org/packages/UglyToad.PdfPig) |
+| `Unio.Pdf` | PDF tables | [PdfPig](https://www.nuget.org/packages/PdfPig) |
 | `Unio.Json` | JSON | None (built-in `System.Text.Json`) |
 | `Unio.Xml` | XML | None (built-in `System.Xml.Linq`) |
-| `Unio.Validation` | -- | None |
+| `Unio.Validation` | -- | None (built-in `System.ComponentModel.DataAnnotations`) |
 
 ---
 
@@ -141,9 +146,82 @@ public class ReportService(IUnioExtractor extractor)
 - **Streaming first** -- `IAsyncEnumerable<T>` across all formats, never loads entire files into memory
 - **Zero-dep core** -- The core package has no external dependencies
 - **Modular** -- Install only the format readers you need
-- **Validation** -- Built-in support for `DataAnnotations`
+- **Validation** -- Built-in support for `DataAnnotations` and fluent validation rules
+- **DI-first** -- Implements `IUnioExtractor` for clean dependency injection
 - **Cross-platform** -- No `System.Drawing`, no COM, no `libgdiplus`. Works on Windows, Linux, macOS, and containers
 - **Auto-detection** -- File format detected by magic bytes and extension
+
+---
+
+## Validation
+
+### DataAnnotations (attribute-based)
+
+Add standard `[Required]`, `[Range]`, `[StringLength]` attributes to your model, then:
+
+```csharp
+using Unio.Validation;
+
+var result = unio.ExtractWithErrors<Invoice>("invoices.csv", opt =>
+{
+    opt.UseDataAnnotationValidation();
+});
+
+Console.WriteLine($"Valid: {result.SuccessCount}, Invalid: {result.ErrorCount}");
+
+foreach (var error in result.Errors)
+    Console.WriteLine($"  Row {error.RowNumber}: {error.Message}");
+```
+
+### Fluent Validation (no attributes needed)
+
+```csharp
+using Unio.Validation;
+
+var validator = new FluentRecordValidator<Invoice>()
+    .RuleFor(x => x.Amount, v => v.GreaterThan(0m).LessThan(1_000_000m))
+    .RuleFor(x => x.InvoiceNo, v => v.NotEmpty().MaxLength(20))
+    .RuleFor(x => x.DueDate, v => v.NotDefault());
+
+var result = unio.ExtractWithErrors<Invoice>("invoices.csv", opt =>
+{
+    opt.UseFluentValidation(validator);
+});
+
+// result.Records -- valid records only
+// result.Errors  -- validation failures with row numbers
+```
+
+### Standalone Validation (after extraction)
+
+```csharp
+var records = unio.Extract<Invoice>("invoices.csv");
+var batch = new DataAnnotationValidator().ValidateAll(records);
+
+// batch.Valid    -- records that passed
+// batch.Invalid  -- records that failed
+// batch.Errors   -- all validation errors with details
+```
+
+---
+
+## Error Handling
+
+```csharp
+// Collect all errors and get valid records
+var result = unio.ExtractWithErrors<Invoice>("data.csv");
+// result.Records  -- valid records
+// result.Errors   -- all errors with row numbers
+// result.HasErrors -- quick check
+
+// Configure error handling mode
+var data = unio.Extract<Invoice>("data.csv", opt =>
+{
+    opt.OnError = ErrorHandling.ThrowOnFirst;       // Throw immediately
+    opt.OnError = ErrorHandling.SkipAndContinue;    // Skip bad rows
+    opt.OnError = ErrorHandling.CollectAndContinue; // Collect errors
+});
+```
 
 ---
 

@@ -1,11 +1,9 @@
 <Project>
   <PropertyGroup>
-    <TargetFramework>net10.;netstandard2.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <LangVersion>latest</LangVersion>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <Authors>Isaiah Clifford Opoku </Authors>
+    <Authors>Isaiah Clifford Opoku</Authors>
     <Company>CliffTechSolutions</Company>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/Clifftech123/unio</PackageProjectUrl>

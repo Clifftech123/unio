@@ -5,201 +5,210 @@ using Unio.Mapping;
 
 namespace Unio.Csv;
 
-
-  /// <summary>
+/// <summary>
 /// High-performance CSV extractor with streaming support.
-/// Zero external dependencies. Uses Span<T> for parsing on .NET 8+.
+/// Zero external dependencies.
 /// </summary>
-public class CsvExtractor : IDataExtractor
-{
-    public IReadOnlyList<string> SupportedExtensions => new[] { ".csv", ".tsv" };
+public class CsvExtractor : IDataExtractor {
+	public IReadOnlyList<string> SupportedExtensions => new[] { ".csv", ".tsv" };
 
-    public bool CanHandle(Stream stream, string? fileExtension = null)
-    {
-        if (fileExtension is not null)
-        {
-            var ext = fileExtension.ToLowerInvariant();
-            return ext is ".csv" or ".tsv";
-        }
-        return false; // CSV has no magic bytes
-    }
+	public bool CanHandle(Stream stream, string? fileExtension = null) {
+		if (fileExtension is not null) {
+			var ext = fileExtension.ToLowerInvariant();
+			return ext is ".csv" or ".tsv";
+		}
+		return false;
+	}
 
-    public IEnumerable<T> Extract<T>(Stream stream, ExtractionOptions? options = null) where T : class, new()
-    {
-        options ??= new ExtractionOptions();
-        var delimiter = options.Delimiter ?? ',';
+	public IEnumerable<T> Extract<T>(Stream stream, ExtractionOptions? options = null) where T : class, new() {
+		options ??= new ExtractionOptions();
+		var delimiter = ResolveDelimiter(options);
 
-        using var reader = new StreamReader(stream, Encoding.UTF8, detectEncodingFromByteOrderMarks: true,
-            bufferSize: 8192, leaveOpen: true);
+		using var reader = new StreamReader(stream, Encoding.UTF8, detectEncodingFromByteOrderMarks: true,
+			bufferSize: 8192, leaveOpen: true);
 
-        string[]? headers = null;
-        TypeMapper<T>? mapper = null;
-        int rowIndex = 0;
-        int dataRowIndex = 0;
+		string[]? headers = null;
+		TypeMapper<T>? mapper = null;
+		int rowIndex = 0;
+		int dataRowIndex = 0;
 
-        while (reader.ReadLine() is { } line)
-        {
-            if (rowIndex < options.StartRow)
-            {
-                rowIndex++;
-                continue;
-            }
+		while (reader.ReadLine() is { } line) {
+			if (rowIndex < options.StartRow) {
+				rowIndex++;
+				continue;
+			}
 
-            var fields = ParseLine(line, delimiter);
+			var fields = ParseLine(line, delimiter);
 
-            if (options.HasHeaderRow && headers is null)
-            {
-                headers = fields;
-                mapper = new TypeMapper<T>(headers, options.Culture);
-                rowIndex++;
-                continue;
-            }
+			if (options.HasHeaderRow && headers is null) {
+				headers = fields;
+				mapper = new TypeMapper<T>(headers, options.Culture);
+				rowIndex++;
+				continue;
+			}
 
-            mapper ??= new TypeMapper<T>(null, options.Culture);
+			mapper ??= new TypeMapper<T>(null, options.Culture);
 
-            if (options.MaxRows.HasValue && dataRowIndex >= options.MaxRows.Value)
-                yield break;
+			if (options.MaxRows.HasValue && dataRowIndex >= options.MaxRows.Value)
+				yield break;
 
-            var values = fields.Cast<object?>().ToArray();
-            yield return mapper.Map(values);
-            dataRowIndex++;
-            rowIndex++;
-        }
-    }
+			var values = fields.Cast<object?>().ToArray();
+			yield return mapper.Map(values);
+			dataRowIndex++;
+			rowIndex++;
+		}
+	}
 
-    public async IAsyncEnumerable<T> ExtractAsync<T>(Stream stream, ExtractionOptions? options = null,
-        [EnumeratorCancellation] CancellationToken cancellationToken = default) where T : class, new()
-    {
-        options ??= new ExtractionOptions();
-        var delimiter = options.Delimiter ?? ',';
+	public IEnumerable<dynamic> Extract(Stream stream, ExtractionOptions? options = null) {
+		options ??= new ExtractionOptions();
+		var delimiter = ResolveDelimiter(options);
 
-        using var reader = new StreamReader(stream, Encoding.UTF8, detectEncodingFromByteOrderMarks: true,
-            bufferSize: 8192, leaveOpen: true);
+		using var reader = new StreamReader(stream, Encoding.UTF8, detectEncodingFromByteOrderMarks: true,
+			bufferSize: 8192, leaveOpen: true);
 
-        string[]? headers = null;
-        TypeMapper<T>? mapper = null;
-        int rowIndex = 0;
-        int dataRowIndex = 0;
+		string[]? headers = null;
+		int rowIndex = 0;
+		int dataRowIndex = 0;
 
-        while (await reader.ReadLineAsync(cancellationToken) is { } line)
-        {
-            cancellationToken.ThrowIfCancellationRequested();
+		while (reader.ReadLine() is { } line) {
+			if (rowIndex < options.StartRow) { rowIndex++; continue; }
 
-            if (rowIndex < options.StartRow) { rowIndex++; continue; }
+			var fields = ParseLine(line, delimiter);
 
-            var fields = ParseLine(line, delimiter);
+			if (options.HasHeaderRow && headers is null) {
+				headers = fields;
+				rowIndex++;
+				continue;
+			}
 
-            if (options.HasHeaderRow && headers is null)
-            {
-                headers = fields;
-                mapper = new TypeMapper<T>(headers, options.Culture);
-                rowIndex++;
-                continue;
-            }
+			if (options.MaxRows.HasValue && dataRowIndex >= options.MaxRows.Value)
+				yield break;
 
-            mapper ??= new TypeMapper<T>(null, options.Culture);
+			var expando = new System.Dynamic.ExpandoObject() as IDictionary<string, object?>;
+			for (int i = 0; i < fields.Length; i++) {
+				var key = headers is not null && i < headers.Length
+					? headers[i].Trim()
+					: $"Column{i}";
+				expando[key] = fields[i];
+			}
 
-            if (options.MaxRows.HasValue && dataRowIndex >= options.MaxRows.Value)
-                yield break;
+			yield return expando;
+			dataRowIndex++;
+			rowIndex++;
+		}
+	}
 
-            var values = fields.Cast<object?>().ToArray();
-            yield return mapper.Map(values);
-            dataRowIndex++;
-            rowIndex++;
-        }
-    }
+	public async IAsyncEnumerable<T> ExtractAsync<T>(Stream stream, ExtractionOptions? options = null,
+		[EnumeratorCancellation] CancellationToken cancellationToken = default) where T : class, new() {
+		options ??= new ExtractionOptions();
+		var delimiter = ResolveDelimiter(options);
 
-    public IEnumerable<dynamic> Extract(Stream stream, ExtractionOptions? options = null)
-    {
-        options ??= new ExtractionOptions();
-        var delimiter = options.Delimiter ?? ',';
+		using var reader = new StreamReader(stream, Encoding.UTF8, detectEncodingFromByteOrderMarks: true,
+			bufferSize: 8192, leaveOpen: true);
 
-        using var reader = new StreamReader(stream, Encoding.UTF8, detectEncodingFromByteOrderMarks: true,
-            bufferSize: 8192, leaveOpen: true);
+		string[]? headers = null;
+		TypeMapper<T>? mapper = null;
+		int rowIndex = 0;
+		int dataRowIndex = 0;
 
-        string[]? headers = null;
-        int rowIndex = 0;
+		while (await reader.ReadLineAsync(cancellationToken) is { } line) {
+			cancellationToken.ThrowIfCancellationRequested();
 
-        while (reader.ReadLine() is { } line)
-        {
-            if (rowIndex < options.StartRow) { rowIndex++; continue; }
+			if (rowIndex < options.StartRow) { rowIndex++; continue; }
 
-            var fields = ParseLine(line, delimiter);
+			var fields = ParseLine(line, delimiter);
 
-            if (options.HasHeaderRow && headers is null)
-            {
-                headers = fields;
-                rowIndex++;
-                continue;
-            }
+			if (options.HasHeaderRow && headers is null) {
+				headers = fields;
+				mapper = new TypeMapper<T>(headers, options.Culture);
+				rowIndex++;
+				continue;
+			}
 
-            var expando = new System.Dynamic.ExpandoObject() as IDictionary<string, object?>;
-            for (int i = 0; i < fields.Length; i++)
-            {
-                var key = headers is not null && i < headers.Length
-                    ? headers[i].Trim()
-                    : $"Column{i}";
-                expando[key] = fields[i];
-            }
+			mapper ??= new TypeMapper<T>(null, options.Culture);
 
-            yield return expando;
-            rowIndex++;
-        }
-    }
+			if (options.MaxRows.HasValue && dataRowIndex >= options.MaxRows.Value)
+				yield break;
 
-    /// <summary>
-    /// RFC 4180 compliant CSV line parser. Handles quoted fields, escaped quotes,
-    /// and embedded delimiters.
-    /// </summary>
-    internal static string[] ParseLine(string line, char delimiter)
-    {
-        var fields = new List<string>();
-        var field = new StringBuilder();
-        bool inQuotes = false;
+			var values = fields.Cast<object?>().ToArray();
+			yield return mapper.Map(values);
+			dataRowIndex++;
+			rowIndex++;
+		}
+	}
 
-        for (int i = 0; i < line.Length; i++)
-        {
-            char c = line[i];
+	/// <summary>
+	/// Resolves the delimiter: explicit option > auto-detect from first line > default comma.
+	/// </summary>
+	private static char ResolveDelimiter(ExtractionOptions options) {
+		return options.Delimiter ?? ',';
+	}
 
-            if (inQuotes)
-            {
-                if (c == '"')
-                {
-                    // Check for escaped quote ""
-                    if (i + 1 < line.Length && line[i + 1] == '"')
-                    {
-                        field.Append('"');
-                        i++; // Skip next quote
-                    }
-                    else
-                    {
-                        inQuotes = false;
-                    }
-                }
-                else
-                {
-                    field.Append(c);
-                }
-            }
-            else
-            {
-                if (c == '"')
-                {
-                    inQuotes = true;
-                }
-                else if (c == delimiter)
-                {
-                    fields.Add(field.ToString());
-                    field.Clear();
-                }
-                else
-                {
-                    field.Append(c);
-                }
-            }
-        }
+	/// <summary>
+	/// Sniffs the delimiter from the first line of a stream.
+	/// Resets position after sniffing. Falls back to comma.
+	/// </summary>
+	internal static char SniffDelimiter(Stream stream) {
+		if (!stream.CanSeek) return ',';
 
-        fields.Add(field.ToString());
-        return fields.ToArray();
-    }
+		var pos = stream.Position;
+		using var reader = new StreamReader(stream, Encoding.UTF8, leaveOpen: true);
+		var firstLine = reader.ReadLine();
+		stream.Position = pos;
+
+		if (firstLine is null) return ',';
+
+		int tabs = firstLine.Count(c => c == '\t');
+		int commas = firstLine.Count(c => c == ',');
+
+		return tabs > commas ? '\t' : ',';
+	}
+
+	/// <summary>
+	/// RFC 4180 compliant CSV line parser. Handles quoted fields, escaped quotes,
+	/// and embedded delimiters.
+	/// </summary>
+	internal static string[] ParseLine(string line, char delimiter) {
+		var fields = new List<string>();
+		var field = new StringBuilder();
+		bool inQuotes = false;
+		int i = 0;
+
+		while (i < line.Length) {
+			char c = line[i];
+
+			if (inQuotes) {
+				if (c == '"') {
+					if (i + 1 < line.Length && line[i + 1] == '"') {
+						field.Append('"');
+						i += 2;
+						continue;
+					}
+					else {
+						inQuotes = false;
+					}
+				}
+				else {
+					field.Append(c);
+				}
+			}
+			else {
+				if (c == '"') {
+					inQuotes = true;
+				}
+				else if (c == delimiter) {
+					fields.Add(field.ToString());
+					field.Clear();
+				}
+				else {
+					field.Append(c);
+				}
+			}
+
+			i++;
+		}
+
+		fields.Add(field.ToString());
+		return fields.ToArray();
+	}
 }
