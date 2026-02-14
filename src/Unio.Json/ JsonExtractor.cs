@@ -1,0 +1,28 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Unio.Abstractions;
+
+namespace Unio.Json
+{
+	public class JsonExtractor : IDataExtractor {
+		public IReadOnlyList<string> SupportedExtensions => throw new NotImplementedException();
+
+		public bool CanHandle(Stream stream, string? fileExtension = null) {
+			throw new NotImplementedException();
+		}
+
+		public IEnumerable<T> Extract<T>(Stream stream, ExtractionOptions? options = null) where T : class, new() {
+			throw new NotImplementedException();
+		}
+
+		public IEnumerable<dynamic> Extract(Stream stream, ExtractionOptions? options = null) {
+			throw new NotImplementedException();
+		}
+
+		public IAsyncEnumerable<T> ExtractAsync<T>(Stream stream, ExtractionOptions? options = null, CancellationToken cancellationToken = default) where T : class, new() {
+			throw new NotImplementedException();
+		}
+	}
+}

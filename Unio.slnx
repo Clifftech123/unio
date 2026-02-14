@@ -1,2 +1,20 @@
 <Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Unio/Unio.csproj" />
+    <Project Path="src/Unio.Excel/Unio.Excel.csproj" />
+    <Project Path="src/Unio.Json/Unio.Json.csproj" />
+    <Project Path="src/Unio.Pdf/Unio.Pdf.csproj" />
+    <Project Path="src/Unio.Validation/Unio.Validation.csproj" />
+    <Project Path="src/Unio.Xml/Unio.Xml.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Unio.Tests/Unio.Tests.csproj" />
+    <Project Path="tests/Unio.Tests.Integration/Unio.Tests.Integration.csproj" />
+  </Folder>
+  <Folder Name="/samples/">
+    <Project Path="samples/Unio.Samples.ConsoleApp/Unio.Samples.ConsoleApp.csproj" />
+  </Folder>
+  <Folder Name="/benchmarks/">
+    <Project Path="benchmarks/Unio.Benchmarks/Unio.Benchmarks.csproj" />
+  </Folder>
 </Solution>
