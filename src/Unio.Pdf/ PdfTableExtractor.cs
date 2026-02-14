@@ -1,11 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Unio.Abstractions;
 
-namespace Unio.Pdf
-{
+namespace Unio.Pdf {
 	public class PdfTableExtractor : IDataExtractor {
 		public IReadOnlyList<string> SupportedExtensions => throw new NotImplementedException();
 
