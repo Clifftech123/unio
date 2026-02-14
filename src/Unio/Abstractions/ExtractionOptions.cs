@@ -34,6 +34,12 @@ public class ExtractionOptions
 
     /// <summary>Maximum number of rows to read. Null = read all.</summary>
     public int? MaxRows { get; set; }
+
+    /// <summary>
+    /// Optional validation callback. Set by Unio.Validation extension methods.
+    /// Returns a list of error messages for the given record, or empty if valid.
+    /// </summary>
+    public Func<object, IReadOnlyList<string>>? RecordValidator { get; set; }
 }
 
 public enum ErrorHandling

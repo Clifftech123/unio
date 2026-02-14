@@ -9,7 +9,7 @@ namespace Unio.Mapping {
 	/// Maps raw row data (string[] or object[]) to strongly-typed objects using attributes.
 	/// This is the heart of Unio's type mapping engine.
 	/// </summary>
-	internal class TypeMapper<T> where T : class, new() {
+	public class TypeMapper<T> where T : class, new() {
 		private readonly PropertyMapping[] _mappings;
 		private readonly CultureInfo _culture;
 
@@ -129,20 +129,7 @@ namespace Unio.Mapping {
 		/// <returns></returns>
 
 		private static int FindHeaderIndex(string[] headers, string name) {
-			for (int i = 0; i < headers.Length; i++) {
-				if (string.Equals(headers[i]?.Trim() ?? "", name, StringComparison.OrdinalIgnoreCase))
-					return i;
-			}
-
-			// Try fuzzy: remove spaces and underscores
-			var normalized = name.Replace(" ", "").Replace("_", "");
-			for (int i = 0; i < headers.Length; i++) {
-				var headerNorm = (headers[i]?.Trim() ?? "").Replace(" ", "").Replace("_", "");
-				if (string.Equals(headerNorm, normalized, StringComparison.OrdinalIgnoreCase))
-					return i;
-			}
-
-			return -1;
+			return HeaderMatcher.FindIndex(headers, name);
 		}
 
 		/// <summary>

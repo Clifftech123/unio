@@ -5,10 +5,9 @@ using Unio.Mapping;
 
 namespace Unio.Csv;
 
-
 /// <summary>
 /// High-performance CSV extractor with streaming support.
-/// Zero external dependencies. Uses Span<T> for parsing on .NET 8+.
+/// Zero external dependencies.
 /// </summary>
 public class CsvExtractor : IDataExtractor {
 	public IReadOnlyList<string> SupportedExtensions => new[] { ".csv", ".tsv" };
@@ -18,12 +17,12 @@ public class CsvExtractor : IDataExtractor {
 			var ext = fileExtension.ToLowerInvariant();
 			return ext is ".csv" or ".tsv";
 		}
-		return false; // CSV has no magic bytes
+		return false;
 	}
 
 	public IEnumerable<T> Extract<T>(Stream stream, ExtractionOptions? options = null) where T : class, new() {
 		options ??= new ExtractionOptions();
-		var delimiter = options.Delimiter ?? ',';
+		var delimiter = ResolveDelimiter(options);
 
 		using var reader = new StreamReader(stream, Encoding.UTF8, detectEncodingFromByteOrderMarks: true,
 			bufferSize: 8192, leaveOpen: true);
@@ -60,10 +59,49 @@ public class CsvExtractor : IDataExtractor {
 		}
 	}
 
+	public IEnumerable<dynamic> Extract(Stream stream, ExtractionOptions? options = null) {
+		options ??= new ExtractionOptions();
+		var delimiter = ResolveDelimiter(options);
+
+		using var reader = new StreamReader(stream, Encoding.UTF8, detectEncodingFromByteOrderMarks: true,
+			bufferSize: 8192, leaveOpen: true);
+
+		string[]? headers = null;
+		int rowIndex = 0;
+		int dataRowIndex = 0;
+
+		while (reader.ReadLine() is { } line) {
+			if (rowIndex < options.StartRow) { rowIndex++; continue; }
+
+			var fields = ParseLine(line, delimiter);
+
+			if (options.HasHeaderRow && headers is null) {
+				headers = fields;
+				rowIndex++;
+				continue;
+			}
+
+			if (options.MaxRows.HasValue && dataRowIndex >= options.MaxRows.Value)
+				yield break;
+
+			var expando = new System.Dynamic.ExpandoObject() as IDictionary<string, object?>;
+			for (int i = 0; i < fields.Length; i++) {
+				var key = headers is not null && i < headers.Length
+					? headers[i].Trim()
+					: $"Column{i}";
+				expando[key] = fields[i];
+			}
+
+			yield return expando;
+			dataRowIndex++;
+			rowIndex++;
+		}
+	}
+
 	public async IAsyncEnumerable<T> ExtractAsync<T>(Stream stream, ExtractionOptions? options = null,
 		[EnumeratorCancellation] CancellationToken cancellationToken = default) where T : class, new() {
 		options ??= new ExtractionOptions();
-		var delimiter = options.Delimiter ?? ',';
+		var delimiter = ResolveDelimiter(options);
 
 		using var reader = new StreamReader(stream, Encoding.UTF8, detectEncodingFromByteOrderMarks: true,
 			bufferSize: 8192, leaveOpen: true);
@@ -99,38 +137,31 @@ public class CsvExtractor : IDataExtractor {
 		}
 	}
 
-	public IEnumerable<dynamic> Extract(Stream stream, ExtractionOptions? options = null) {
-		options ??= new ExtractionOptions();
-		var delimiter = options.Delimiter ?? ',';
+	/// <summary>
+	/// Resolves the delimiter: explicit option > auto-detect from first line > default comma.
+	/// </summary>
+	private static char ResolveDelimiter(ExtractionOptions options) {
+		return options.Delimiter ?? ',';
+	}
 
-		using var reader = new StreamReader(stream, Encoding.UTF8, detectEncodingFromByteOrderMarks: true,
-			bufferSize: 8192, leaveOpen: true);
+	/// <summary>
+	/// Sniffs the delimiter from the first line of a stream.
+	/// Resets position after sniffing. Falls back to comma.
+	/// </summary>
+	internal static char SniffDelimiter(Stream stream) {
+		if (!stream.CanSeek) return ',';
 
-		string[]? headers = null;
-		int rowIndex = 0;
+		var pos = stream.Position;
+		using var reader = new StreamReader(stream, Encoding.UTF8, leaveOpen: true);
+		var firstLine = reader.ReadLine();
+		stream.Position = pos;
 
-		while (reader.ReadLine() is { } line) {
-			if (rowIndex < options.StartRow) { rowIndex++; continue; }
+		if (firstLine is null) return ',';
 
-			var fields = ParseLine(line, delimiter);
+		int tabs = firstLine.Count(c => c == '\t');
+		int commas = firstLine.Count(c => c == ',');
 
-			if (options.HasHeaderRow && headers is null) {
-				headers = fields;
-				rowIndex++;
-				continue;
-			}
-
-			var expando = new System.Dynamic.ExpandoObject() as IDictionary<string, object?>;
-			for (int i = 0; i < fields.Length; i++) {
-				var key = headers is not null && i < headers.Length
-					? headers[i].Trim()
-					: $"Column{i}";
-				expando[key] = fields[i];
-			}
-
-			yield return expando;
-			rowIndex++;
-		}
+		return tabs > commas ? '\t' : ',';
 	}
 
 	/// <summary>
@@ -141,16 +172,17 @@ public class CsvExtractor : IDataExtractor {
 		var fields = new List<string>();
 		var field = new StringBuilder();
 		bool inQuotes = false;
+		int i = 0;
 
-		for (int i = 0; i < line.Length; i++) {
+		while (i < line.Length) {
 			char c = line[i];
 
 			if (inQuotes) {
 				if (c == '"') {
-					// Check for escaped quote ""
 					if (i + 1 < line.Length && line[i + 1] == '"') {
 						field.Append('"');
-						i++; // Skip next quote
+						i += 2;
+						continue;
 					}
 					else {
 						inQuotes = false;
@@ -172,6 +204,8 @@ public class CsvExtractor : IDataExtractor {
 					field.Append(c);
 				}
 			}
+
+			i++;
 		}
 
 		fields.Add(field.ToString());

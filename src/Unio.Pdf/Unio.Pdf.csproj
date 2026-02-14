@@ -11,7 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="UglyToad.PdfPig" />
+    <PackageReference Include="PdfPig" />
   </ItemGroup>
 
 </Project>

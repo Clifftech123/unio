@@ -15,10 +15,11 @@ Reading an Excel file requires one library. CSV needs another. PDF tables need a
 Unio gives you **one API** for all of them:
 
 ```csharp
-var invoices = Unio.Extract<Invoice>("invoices.xlsx");
-var invoices = Unio.Extract<Invoice>("invoices.csv");
-var invoices = Unio.Extract<Invoice>("invoices.pdf");
-var invoices = Unio.Extract<Invoice>("invoices.json");
+var unio = new Unio();
+var invoices = unio.Extract<Invoice>("invoices.xlsx");
+var invoices = unio.Extract<Invoice>("invoices.csv");
+var invoices = unio.Extract<Invoice>("invoices.pdf");
+var invoices = unio.Extract<Invoice>("invoices.json");
 ```
 
 Same call. Same result. Format is auto-detected.
@@ -65,7 +66,8 @@ public class Invoice
 
 ```csharp
 // From any supported format -- auto-detected
-var invoices = Unio.Extract<Invoice>("invoices.xlsx");
+var unio = new Unio();
+var invoices = unio.Extract<Invoice>("invoices.xlsx");
 ```
 
 ### Stream large files
@@ -73,7 +75,8 @@ var invoices = Unio.Extract<Invoice>("invoices.xlsx");
 Process millions of rows without loading everything into memory:
 
 ```csharp
-await foreach (var invoice in Unio.ExtractAsync<Invoice>("huge-file.xlsx"))
+var unio = new Unio();
+await foreach (var invoice in unio.ExtractAsync<Invoice>("huge-file.xlsx"))
 {
     await ProcessAsync(invoice);
 }
@@ -84,13 +87,15 @@ await foreach (var invoice in Unio.ExtractAsync<Invoice>("huge-file.xlsx"))
 No model? No problem:
 
 ```csharp
-var rows = Unio.Extract("data.csv"); // IEnumerable<dynamic>
+var unio = new Unio();
+var rows = unio.Extract("data.csv"); // IEnumerable<dynamic>
 ```
 
 ### Configure extraction
 
 ```csharp
-var records = Unio.Extract<Invoice>("data.xlsx", opt =>
+var unio = new Unio();
+var records = unio.Extract<Invoice>("data.xlsx", opt =>
 {
     opt.SheetName = "Sheet2";
     opt.StartRow = 3;
