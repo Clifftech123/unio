@@ -47,15 +47,7 @@ public class PdfTableExtractorTests {
 		stream.Position.Should().Be(0);
 	}
 
-	// --- Extract employees.pdf ---
-
-	[Fact]
-	public void Extract_EmployeesPdf_ReturnsRecords() {
-		using var stream = DataPath.OpenRead("employees.pdf");
-		var results = _extractor.Extract<Employee>(stream).ToList();
-
-		results.Should().NotBeEmpty();
-	}
+	// --- Extract employees.pdf (dynamic only — complex multi-table layout) ---
 
 	[Fact]
 	public void Extract_EmployeesPdf_Dynamic_ReturnsRows() {
@@ -65,16 +57,7 @@ public class PdfTableExtractorTests {
 		results.Should().NotBeEmpty();
 	}
 
-	[Fact]
-	public void Extract_EmployeesPdf_WithMaxRows_LimitsOutput() {
-		using var stream = DataPath.OpenRead("employees.pdf");
-		var options = new ExtractionOptions { MaxRows = 2 };
-		var results = _extractor.Extract<Employee>(stream, options).ToList();
-
-		results.Should().HaveCount(2);
-	}
-
-	// --- Extract products.pdf ---
+	// --- Extract products.pdf (clean single-table layout) ---
 
 	[Fact]
 	public void Extract_ProductsPdf_ReturnsRecords() {
@@ -92,6 +75,15 @@ public class PdfTableExtractorTests {
 		results.Should().NotBeEmpty();
 	}
 
+	[Fact]
+	public void Extract_ProductsPdf_WithMaxRows_LimitsOutput() {
+		using var stream = DataPath.OpenRead("products.pdf");
+		var options = new ExtractionOptions { MaxRows = 2 };
+		var results = _extractor.Extract<Product>(stream, options).ToList();
+
+		results.Should().HaveCount(2);
+	}
+
 	// --- Plain text fallback ---
 
 	[Fact]
@@ -106,11 +98,11 @@ public class PdfTableExtractorTests {
 	// --- Async ---
 
 	[Fact]
-	public async Task ExtractAsync_EmployeesPdf_ReturnsRecords() {
-		using var stream = DataPath.OpenRead("employees.pdf");
-		var results = new List<Employee>();
+	public async Task ExtractAsync_ProductsPdf_ReturnsRecords() {
+		using var stream = DataPath.OpenRead("products.pdf");
+		var results = new List<Product>();
 
-		await foreach (var record in _extractor.ExtractAsync<Employee>(stream)) {
+		await foreach (var record in _extractor.ExtractAsync<Product>(stream)) {
 			results.Add(record);
 		}
 
@@ -137,8 +129,8 @@ public class PdfTableExtractorTests {
 		var unio = new Unio();
 		unio.RegisterExtractor(new PdfTableExtractor());
 
-		using var stream = DataPath.OpenRead("employees.pdf");
-		var results = unio.Extract<Employee>(stream, ".pdf").ToList();
+		using var stream = DataPath.OpenRead("products.pdf");
+		var results = unio.Extract<Product>(stream, ".pdf").ToList();
 
 		results.Should().NotBeEmpty();
 	}

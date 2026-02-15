@@ -1,0 +1,6 @@
+InvoiceNo;Customer;Date;Amount;Tax;Total;Status;DueDate
+INV-001;Accra Tech Ltd;2025-01-15;12500.0;1562.5;14062.5;Paid;2025-02-15
+INV-002;Kumasi Solutions;2025-01-22;8750.0;1093.75;9843.75;Pending;2025-02-22
+INV-003;Takoradi Imports;2025-02-01;23000.0;2875.0;25875.0;Paid;2025-03-01
+INV-004;Cape Coast Digital;2025-02-10;5200.0;650.0;5850.0;Overdue;2025-03-10
+INV-005;Tamale Enterprises;2025-02-14;18900.0;2362.5;21262.5;Pending;2025-03-14

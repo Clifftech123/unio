@@ -1,6 +1,7 @@
 using System.Runtime.CompilerServices;
 using Unio.Abstractions;
 using Unio.Csv;
+using Unio.Mapping;
 
 namespace Unio {
 

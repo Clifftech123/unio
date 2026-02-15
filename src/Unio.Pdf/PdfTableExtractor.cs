@@ -18,7 +18,6 @@ namespace Unio.Pdf {
 	/// </summary>
 	public class PdfTableExtractor : IDataExtractor {
 		private const double RowTolerance = 3.0;
-		private const double ColumnGapMultiplier = 1.5;
 		private const double MinTableColumnConsistency = 0.5;
 		private const int MinColumnsForTable = 2;
 
@@ -61,7 +60,19 @@ namespace Unio.Pdf {
 					yield break;
 
 				var values = row.Cast<object?>().ToArray();
-				yield return mapper.Map(values);
+
+				T mapped;
+				try {
+					mapped = mapper.Map(values);
+				}
+				catch (Exception) when (options.OnError != ErrorHandling.ThrowOnFirst) {
+					// Skip rows that fail to map (e.g. PDF title fragments,
+					// currency symbols, or mixed-table content).
+					dataRowIndex++;
+					continue;
+				}
+
+				yield return mapped;
 				dataRowIndex++;
 			}
 		}
@@ -133,6 +144,14 @@ namespace Unio.Pdf {
 				foreach (var row in rows) {
 					result.Add(MapWordsToColumns(row, columnBoundaries));
 				}
+
+				// Remove rows that don't populate enough columns
+				// (titles, headings, section breaks, rows from other tables).
+				int minPopulated = Math.Max(MinColumnsForTable, columnBoundaries.Count / 2);
+				result = result
+					.Where(row => row.Count(c => !string.IsNullOrWhiteSpace(c)) >= minPopulated)
+					.ToList();
+
 				return result;
 			} else {
 				// Plain text mode: join each row's words into a single text line
@@ -214,41 +233,89 @@ namespace Unio.Pdf {
 		}
 
 		/// <summary>
-		/// Detects column boundaries by analyzing X positions of words across rows.
-		/// A new column starts where there is a gap larger than the average word spacing.
+		/// Detects column boundaries by merging nearby words into cells first,
+		/// then clustering cell left-edge positions across rows.
+		/// This avoids splitting multi-word values (e.g. "Kwame Asante") into
+		/// separate columns.
 		/// </summary>
 		private static List<double> DetectColumnBoundaries(List<List<Word>> rows) {
-			var allLeftEdges = rows
-				.SelectMany(row => row.Select(w => w.BoundingBox.Left))
-				.OrderBy(x => x)
+			// Filter out sparse rows (titles/headings) that skew column detection.
+			var wordCounts = rows.Select(r => r.Count).OrderBy(c => c).ToList();
+			int medianWordCount = wordCounts[wordCounts.Count / 2];
+			int minWords = Math.Max(MinColumnsForTable, medianWordCount / 2);
+			var tableRows = rows.Where(r => r.Count >= minWords).ToList();
+			if (tableRows.Count == 0) tableRows = rows;
+
+			// Compute average character width to determine cell merge threshold
+			double avgCharWidth = ComputeAvgCharWidth(tableRows);
+			double cellMergeThreshold = avgCharWidth * 2;
+
+			// Merge words into cells within each row, then collect cell left edges
+			var allCellLeftEdges = new List<double>();
+			foreach (var row in tableRows) {
+				var cells = MergeWordsIntoCells(row, cellMergeThreshold);
+				allCellLeftEdges.AddRange(cells.Select(c => c[0].BoundingBox.Left));
+			}
+
+			allCellLeftEdges.Sort();
+
+			if (allCellLeftEdges.Count <= 1)
+				return allCellLeftEdges.Count == 1 ? [allCellLeftEdges[0]] : [0];
+
+			// Cluster nearby cell-left-edges to find column positions.
+			// Cells in the same column across rows start at similar X positions.
+			double clusterTolerance = avgCharWidth * 3;
+			var clusters = new List<List<double>> { new() { allCellLeftEdges[0] } };
+
+			for (int i = 1; i < allCellLeftEdges.Count; i++) {
+				if (allCellLeftEdges[i] - clusters[^1][^1] <= clusterTolerance) {
+					clusters[^1].Add(allCellLeftEdges[i]);
+				} else {
+					clusters.Add(new() { allCellLeftEdges[i] });
+				}
+			}
+
+			// Each significant cluster is a column boundary.
+			// Filter out small clusters (noise from titles/outlier rows).
+			int minClusterSize = Math.Max(1, tableRows.Count / 3);
+			return clusters
+				.Where(c => c.Count >= minClusterSize)
+				.Select(c => c[0])
 				.ToList();
+		}
 
-			if (allLeftEdges.Count <= 1)
-				return [allLeftEdges.FirstOrDefault()];
+		/// <summary>
+		/// Merges consecutive words in a row that are close together into cells.
+		/// Normal word spacing within a cell is small; column gaps are larger.
+		/// </summary>
+		private static List<List<Word>> MergeWordsIntoCells(List<Word> row, double threshold) {
+			if (row.Count == 0) return [];
 
-			double totalGap = 0;
-			int gapCount = 0;
+			var cells = new List<List<Word>> { new() { row[0] } };
+			for (int i = 1; i < row.Count; i++) {
+				var gap = row[i].BoundingBox.Left - row[i - 1].BoundingBox.Right;
+				if (gap <= threshold) {
+					cells[^1].Add(row[i]);
+				} else {
+					cells.Add(new() { row[i] });
+				}
+			}
+			return cells;
+		}
+
+		/// <summary>
+		/// Computes average character width across all words for spatial thresholds.
+		/// </summary>
+		private static double ComputeAvgCharWidth(List<List<Word>> rows) {
+			double totalWidth = 0;
+			int totalChars = 0;
 			foreach (var row in rows) {
-				for (int i = 1; i < row.Count; i++) {
-					var gap = row[i].BoundingBox.Left - row[i - 1].BoundingBox.Right;
-					if (gap > 0) {
-						totalGap += gap;
-						gapCount++;
-					}
+				foreach (var word in row) {
+					totalWidth += word.BoundingBox.Width;
+					totalChars += word.Text.Length;
 				}
 			}
-
-			double avgGap = gapCount > 0 ? totalGap / gapCount : 10.0;
-			double columnThreshold = avgGap * ColumnGapMultiplier;
-
-			var boundaries = new List<double> { allLeftEdges[0] };
-			for (int i = 1; i < allLeftEdges.Count; i++) {
-				if (allLeftEdges[i] - allLeftEdges[i - 1] > columnThreshold) {
-					boundaries.Add(allLeftEdges[i]);
-				}
-			}
-
-			return boundaries;
+			return totalChars > 0 ? totalWidth / totalChars : 5.0;
 		}
 
 		/// <summary>

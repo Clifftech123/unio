@@ -1,0 +1,53 @@
+<?xml version="1.0" ?>
+<Invoices>
+  <Invoice>
+    <InvoiceNo>INV-001</InvoiceNo>
+    <Customer>Accra Tech Ltd</Customer>
+    <Date>2025-01-15</Date>
+    <Amount>12500.0</Amount>
+    <Tax>1562.5</Tax>
+    <Total>14062.5</Total>
+    <Status>Paid</Status>
+    <DueDate>2025-02-15</DueDate>
+  </Invoice>
+  <Invoice>
+    <InvoiceNo>INV-002</InvoiceNo>
+    <Customer>Kumasi Solutions</Customer>
+    <Date>2025-01-22</Date>
+    <Amount>8750.0</Amount>
+    <Tax>1093.75</Tax>
+    <Total>9843.75</Total>
+    <Status>Pending</Status>
+    <DueDate>2025-02-22</DueDate>
+  </Invoice>
+  <Invoice>
+    <InvoiceNo>INV-003</InvoiceNo>
+    <Customer>Takoradi Imports</Customer>
+    <Date>2025-02-01</Date>
+    <Amount>23000.0</Amount>
+    <Tax>2875.0</Tax>
+    <Total>25875.0</Total>
+    <Status>Paid</Status>
+    <DueDate>2025-03-01</DueDate>
+  </Invoice>
+  <Invoice>
+    <InvoiceNo>INV-004</InvoiceNo>
+    <Customer>Cape Coast Digital</Customer>
+    <Date>2025-02-10</Date>
+    <Amount>5200.0</Amount>
+    <Tax>650.0</Tax>
+    <Total>5850.0</Total>
+    <Status>Overdue</Status>
+    <DueDate>2025-03-10</DueDate>
+  </Invoice>
+  <Invoice>
+    <InvoiceNo>INV-005</InvoiceNo>
+    <Customer>Tamale Enterprises</Customer>
+    <Date>2025-02-14</Date>
+    <Amount>18900.0</Amount>
+    <Tax>2362.5</Tax>
+    <Total>21262.5</Total>
+    <Status>Pending</Status>
+    <DueDate>2025-03-14</DueDate>
+  </Invoice>
+</Invoices>

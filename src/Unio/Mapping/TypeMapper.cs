@@ -181,19 +181,19 @@ namespace Unio.Mapping {
 		/// <returns></returns>
 		private object ConvertNumericOrOther(string str, Type underlying) {
 			if (underlying == typeof(int))
-				return int.Parse(str, _culture);
+				return int.Parse(CleanNumericString(str), NumberStyles.Any, _culture);
 
 			if (underlying == typeof(long))
-				return long.Parse(str, _culture);
+				return long.Parse(CleanNumericString(str), NumberStyles.Any, _culture);
 
 			if (underlying == typeof(decimal))
-				return decimal.Parse(str, NumberStyles.Any, _culture);
+				return decimal.Parse(CleanNumericString(str), NumberStyles.Any, _culture);
 
 			if (underlying == typeof(double))
-				return double.Parse(str, NumberStyles.Any, _culture);
+				return double.Parse(CleanNumericString(str), NumberStyles.Any, _culture);
 
 			if (underlying == typeof(float))
-				return float.Parse(str, NumberStyles.Any, _culture);
+				return float.Parse(CleanNumericString(str), NumberStyles.Any, _culture);
 
 			if (underlying == typeof(DateTimeOffset))
 				return DateTimeOffset.Parse(str, _culture);
@@ -202,6 +202,17 @@ namespace Unio.Mapping {
 				return Guid.Parse(str);
 
 			return Convert.ChangeType(str, underlying, _culture);
+		}
+
+		/// <summary>
+		/// Strips common currency symbols and whitespace that may appear in
+		/// values extracted from PDFs or other formatted sources.
+		/// </summary>
+		private static string CleanNumericString(string value) {
+			var span = value.AsSpan().Trim();
+			while (span.Length > 0 && (span[0] == '$' || span[0] == '€' || span[0] == '£' || span[0] == '¥'))
+				span = span[1..].TrimStart();
+			return span.ToString();
 		}
 
 
