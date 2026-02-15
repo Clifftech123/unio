@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" />
+    <PackageReference Include="Scalar.AspNetCore" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Unio\Unio.csproj" />
+    <ProjectReference Include="..\..\src\Unio.Json\Unio.Json.csproj" />
+    <ProjectReference Include="..\..\src\Unio.Xml\Unio.Xml.csproj" />
+    <ProjectReference Include="..\..\src\Unio.Excel\Unio.Excel.csproj" />
+    <ProjectReference Include="..\..\src\Unio.Pdf\Unio.Pdf.csproj" />
+  </ItemGroup>
+
+</Project>

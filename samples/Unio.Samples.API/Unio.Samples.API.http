@@ -1,0 +1,6 @@
+@Unio.Samples.API_HostAddress = http://localhost:5080
+
+GET {{Unio.Samples.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
