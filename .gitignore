@@ -364,3 +364,7 @@ FodyWeavers.xsd
 
 # Documentation source (specs & internal docs)
 docs/
+# SQLite databases
+*.db
+*.db-shm
+*.db-wal

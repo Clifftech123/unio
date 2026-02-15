@@ -1,17 +1,18 @@
 <Solution>
   <Folder Name="/src/">
-    <Project Path="src/Unio/Unio.csproj" />
     <Project Path="src/Unio.Excel/Unio.Excel.csproj" />
     <Project Path="src/Unio.Json/Unio.Json.csproj" />
     <Project Path="src/Unio.Pdf/Unio.Pdf.csproj" />
     <Project Path="src/Unio.Validation/Unio.Validation.csproj" />
     <Project Path="src/Unio.Xml/Unio.Xml.csproj" />
+    <Project Path="src/Unio/Unio.csproj" />
   </Folder>
   <Folder Name="/tests/">
-    <Project Path="tests/Unio.Tests/Unio.Tests.csproj" />
     <Project Path="tests/Unio.Tests.Integration/Unio.Tests.Integration.csproj" />
+    <Project Path="tests/Unio.Tests/Unio.Tests.csproj" />
   </Folder>
   <Folder Name="/samples/">
+    <Project Path="samples/Unio.Samples.API/Unio.Samples.API.csproj" Id="2b4d7b6e-2a63-450c-bb6c-0894244a3985" />
     <Project Path="samples/Unio.Samples.ConsoleApp/Unio.Samples.ConsoleApp.csproj" />
   </Folder>
   <Folder Name="/benchmarks/">
