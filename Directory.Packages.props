@@ -4,8 +4,8 @@
   </PropertyGroup>
   <ItemGroup>
     <!-- Build & Packaging -->
-    <PackageVersion Include="MinVer" Version="6.0.0" />
-    <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="8.0.0" />
+    <PackageVersion Include="MinVer" Version="7.0.0" />
+    <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="10.0.103" />
 
     <!-- Core Dependencies -->
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.6" />
