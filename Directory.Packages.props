@@ -20,7 +20,7 @@
     <PackageVersion Include="coverlet.collector" Version="8.0.0" />
 
     <!-- Benchmarks -->
-    <PackageVersion Include="BenchmarkDotNet" Version="0.14.0" />
+    <PackageVersion Include="BenchmarkDotNet" Version="0.15.8" />
 
     <!-- Samples -->
     <PackageVersion Include="Scalar.AspNetCore" Version="2.12.40" />
