@@ -141,6 +141,11 @@ namespace Unio.Excel {
 		}
 
 		private static object? GetCellValue(Cell cell, SharedStringTable? sharedStrings) {
+			// Handle InlineString cells (value stored in cell.InlineString, not cell.CellValue)
+			if (cell.DataType?.Value == CellValues.InlineString) {
+				return cell.InlineString?.InnerText;
+			}
+
 			var value = cell.CellValue?.Text;
 			if (value is null) return null;
 
@@ -151,6 +156,10 @@ namespace Unio.Excel {
 
 			if (cell.DataType?.Value == CellValues.Boolean)
 				return value == "1";
+
+			// Handle explicit string type (e.g. formula string results)
+			if (cell.DataType?.Value == CellValues.String)
+				return value;
 
 			// Try numeric
 			if (double.TryParse(value, System.Globalization.NumberStyles.Any,

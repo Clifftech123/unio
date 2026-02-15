@@ -1,0 +1,11 @@
+[
+  {
+    "Id": 1,
+    "Name": "Kwame Asante",
+    "Department": "Engineering",
+    "Salary": 85000.5,
+    "StartDate": "2021-03-15",
+    "IsActive": true,
+    "Email": "kwame@unio.dev"
+  }
+]

@@ -1,0 +1,93 @@
+<?xml version="1.0" ?>
+<Employees>
+  <Employee>
+    <Id>1</Id>
+    <Name>Kwame Asante</Name>
+    <Department>Engineering</Department>
+    <Salary>85000.5</Salary>
+    <StartDate>2021-03-15</StartDate>
+    <IsActive>True</IsActive>
+    <Email>kwame@unio.dev</Email>
+  </Employee>
+  <Employee>
+    <Id>2</Id>
+    <Name>Ama Mensah</Name>
+    <Department>Marketing</Department>
+    <Salary>72000.0</Salary>
+    <StartDate>2020-07-22</StartDate>
+    <IsActive>True</IsActive>
+    <Email>ama@unio.dev</Email>
+  </Employee>
+  <Employee>
+    <Id>3</Id>
+    <Name>Yaw Boateng</Name>
+    <Department>Engineering</Department>
+    <Salary>91000.75</Salary>
+    <StartDate>2019-11-01</StartDate>
+    <IsActive>True</IsActive>
+    <Email>yaw@unio.dev</Email>
+  </Employee>
+  <Employee>
+    <Id>4</Id>
+    <Name>Efua Owusu</Name>
+    <Department>Finance</Department>
+    <Salary>68000.25</Salary>
+    <StartDate>2022-01-10</StartDate>
+    <IsActive>False</IsActive>
+    <Email>efua@unio.dev</Email>
+  </Employee>
+  <Employee>
+    <Id>5</Id>
+    <Name>Kofi Darko</Name>
+    <Department>Engineering</Department>
+    <Salary>95000.0</Salary>
+    <StartDate>2018-05-30</StartDate>
+    <IsActive>True</IsActive>
+    <Email>kofi@unio.dev</Email>
+  </Employee>
+  <Employee>
+    <Id>6</Id>
+    <Name>Adwoa Poku</Name>
+    <Department>HR</Department>
+    <Salary>64000.0</Salary>
+    <StartDate>2023-02-14</StartDate>
+    <IsActive>True</IsActive>
+    <Email>adwoa@unio.dev</Email>
+  </Employee>
+  <Employee>
+    <Id>7</Id>
+    <Name>Kwesi Appiah</Name>
+    <Department>Marketing</Department>
+    <Salary>77500.5</Salary>
+    <StartDate>2020-09-18</StartDate>
+    <IsActive>False</IsActive>
+    <Email>kwesi@unio.dev</Email>
+  </Employee>
+  <Employee>
+    <Id>8</Id>
+    <Name>Akua Adjei</Name>
+    <Department>Finance</Department>
+    <Salary>82000.0</Salary>
+    <StartDate>2021-06-05</StartDate>
+    <IsActive>True</IsActive>
+    <Email>akua@unio.dev</Email>
+  </Employee>
+  <Employee>
+    <Id>9</Id>
+    <Name>Nana Osei</Name>
+    <Department>Engineering</Department>
+    <Salary>105000.0</Salary>
+    <StartDate>2017-08-20</StartDate>
+    <IsActive>True</IsActive>
+    <Email>nana@unio.dev</Email>
+  </Employee>
+  <Employee>
+    <Id>10</Id>
+    <Name>Abena Frimpong</Name>
+    <Department>HR</Department>
+    <Salary>59000.75</Salary>
+    <StartDate>2023-11-28</StartDate>
+    <IsActive>True</IsActive>
+    <Email>abena@unio.dev</Email>
+  </Employee>
+</Employees>
