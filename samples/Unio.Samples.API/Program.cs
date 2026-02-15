@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
+using Unio;
+using Unio.Abstractions;
 using Unio.Excel;
 using Unio.Json;
 using Unio.Pdf;
@@ -12,14 +14,22 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<AppDbContext>(options =>
 	options.UseSqlite("Data Source=unio_samples.db"));
 
-// --- Unio (register all format extractors) ---
-builder.Services.AddSingleton(_ => {
-	var unio = new Unio.Unio();
-	unio.RegisterExtractor(new JsonExtractor());
-	unio.RegisterExtractor(new XmlExtractor());
-	unio.RegisterExtractor(new XlsxExtractor());
-	unio.RegisterExtractor(new PdfTableExtractor());
-	return unio;
+// --- Unio (DI registration with AddUnio) ---
+// This is the recommended way to register Unio in ASP.NET Core.
+// It registers IUnioExtractor as a singleton, ready for constructor injection.
+//
+// Usage in any service or controller:
+//   public class ReportService(IUnioExtractor extractor)
+//   {
+//       public async Task<List<Invoice>> LoadAsync(Stream file)
+//           => await extractor.ExtractAsync<Invoice>(file).ToListAsync();
+//   }
+builder.Services.AddUnio(config => {
+	config.RegisterExtractor<JsonExtractor>();
+	config.RegisterExtractor<XmlExtractor>();
+	config.RegisterExtractor<XlsxExtractor>();
+	config.RegisterExtractor<PdfTableExtractor>();
+	config.OnError = ErrorHandling.CollectAndContinue;
 });
 
 builder.Services.AddControllers();
