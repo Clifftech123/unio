@@ -1,12 +1,12 @@
 # Unio.Json
 
-JSON data extraction plugin for [Unio](https://www.nuget.org/packages/Unio).
+JSON data extraction plugin for [Unio.Core](https://www.nuget.org/packages/Unio.Core).
 
 ## Installation
 
 ```bash
-dotnet add package Unio           # Required: core library
-dotnet add package Unio.Json      # JSON support
+dotnet add package Unio.Core         # Required: core library
+dotnet add package Unio.Json         # JSON support
 ```
 
 ## Usage
@@ -47,6 +47,6 @@ await foreach (var product in unio.ExtractAsync<Product>("catalog.json"))
 
 ## Links
 
-- [Unio on NuGet](https://www.nuget.org/packages/Unio)
+- [Unio.Core on NuGet](https://www.nuget.org/packages/Unio.Core)
 - [GitHub Repository](https://github.com/Clifftech123/unio)
 - [Documentation](https://github.com/Clifftech123/unio/wiki)
