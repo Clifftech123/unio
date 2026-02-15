@@ -1,0 +1,46 @@
+version: 2
+updates:
+  # Keep NuGet packages updated
+  - package-ecosystem: "nuget"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+    groups:
+      # Format-specific dependencies
+      format-libs:
+        patterns:
+          - "DocumentFormat.OpenXml"
+          - "PdfPig"
+      # Testing packages
+      testing:
+        patterns:
+          - "xunit"
+          - "xunit.*"
+          - "FluentAssertions"
+          - "Microsoft.NET.Test.Sdk"
+          - "coverlet.*"
+      # Build tools
+      build-tools:
+        patterns:
+          - "Microsoft.SourceLink.*"
+          - "MinVer"
+      # Benchmarking
+      benchmarks:
+        patterns:
+          - "BenchmarkDotNet"
+      # Microsoft packages
+      microsoft:
+        patterns:
+          - "Microsoft.Extensions.*"
+          - "Microsoft.EntityFrameworkCore.*"
+          - "Microsoft.AspNetCore.*"
+    open-pull-requests-limit: 5
+
+  # Keep GitHub Actions updated
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+    open-pull-requests-limit: 3
