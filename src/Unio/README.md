@@ -1,11 +1,11 @@
-# Unio
+# Unio.Core
 
 **One API, every format.** Extract typed data from Excel, CSV, PDF, JSON, and XML in C#.
 
 ## Installation
 
 ```bash
-dotnet add package Unio              # Core + CSV
+dotnet add package Unio.Core         # Core + CSV
 dotnet add package Unio.Excel        # Add Excel support
 dotnet add package Unio.Pdf          # Add PDF support
 dotnet add package Unio.Json         # Add JSON support

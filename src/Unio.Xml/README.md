@@ -1,12 +1,12 @@
 # Unio.Xml
 
-XML data extraction plugin for [Unio](https://www.nuget.org/packages/Unio).
+XML data extraction plugin for [Unio.Core](https://www.nuget.org/packages/Unio.Core).
 
 ## Installation
 
 ```bash
-dotnet add package Unio           # Required: core library
-dotnet add package Unio.Xml       # XML support
+dotnet add package Unio.Core         # Required: core library
+dotnet add package Unio.Xml          # XML support
 ```
 
 ## Usage
@@ -47,6 +47,6 @@ await foreach (var emp in unio.ExtractAsync<Employee>("employees.xml"))
 
 ## Links
 
-- [Unio on NuGet](https://www.nuget.org/packages/Unio)
+- [Unio.Core on NuGet](https://www.nuget.org/packages/Unio.Core)
 - [GitHub Repository](https://github.com/Clifftech123/unio)
 - [Documentation](https://github.com/Clifftech123/unio/wiki)

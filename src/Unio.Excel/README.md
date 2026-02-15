@@ -1,12 +1,12 @@
 # Unio.Excel
 
-Excel (XLSX/XLS) data extraction plugin for [Unio](https://www.nuget.org/packages/Unio).
+Excel (XLSX/XLS) data extraction plugin for [Unio.Core](https://www.nuget.org/packages/Unio.Core).
 
 ## Installation
 
 ```bash
-dotnet add package Unio           # Required: core library
-dotnet add package Unio.Excel     # Excel support
+dotnet add package Unio.Core         # Required: core library
+dotnet add package Unio.Excel        # Excel support
 ```
 
 ## Usage
@@ -48,6 +48,6 @@ await foreach (var emp in unio.ExtractAsync<Employee>("large-report.xlsx"))
 
 ## Links
 
-- [Unio on NuGet](https://www.nuget.org/packages/Unio)
+- [Unio.Core on NuGet](https://www.nuget.org/packages/Unio.Core)
 - [GitHub Repository](https://github.com/Clifftech123/unio)
 - [Documentation](https://github.com/Clifftech123/unio/wiki)

@@ -2,9 +2,9 @@
 
 **One API, every format.** Extract typed data from Excel, CSV, PDF, JSON, and XML in C#.
 
-[![NuGet](https://img.shields.io/badge/nuget-1.0.0--preview-blue?style=flat-square&logo=nuget)](https://www.nuget.org/packages/Unio)
+[![NuGet](https://img.shields.io/badge/nuget-1.0.0-blue?style=flat-square&logo=nuget)](https://www.nuget.org/packages/Unio.Core)
 [![License](https://img.shields.io/badge/license-MIT-green?style=flat-square)](https://github.com/Clifftech123/unio/blob/main/LICENSE)
-![.NET](https://img.shields.io/badge/.NET-10.0-512BD4?style=flat-square&logo=dotnet)
+![.NET](https://img.shields.io/badge/.NET-8.0%20|%209.0%20|%2010.0-512BD4?style=flat-square&logo=dotnet)
 
 ---
 
@@ -31,7 +31,7 @@ Same call. Same result. Format is auto-detected.
 Install the core package and add only the formats you need:
 
 ```bash
-dotnet add package Unio              # Core + CSV
+dotnet add package Unio.Core         # Core + CSV
 dotnet add package Unio.Excel        # Add Excel support
 dotnet add package Unio.Pdf          # Add PDF support
 ```
@@ -130,7 +130,7 @@ public class ReportService(IUnioExtractor extractor)
 
 | Package | Format | External Dependencies |
 |:---|:---|:---|
-| `Unio` | CSV | None (+ `Microsoft.Extensions.DependencyInjection.Abstractions`) |
+| `Unio.Core` | CSV | None (+ `Microsoft.Extensions.DependencyInjection.Abstractions`) |
 | `Unio.Excel` | XLSX, XLS | [DocumentFormat.OpenXml](https://www.nuget.org/packages/DocumentFormat.OpenXml) |
 | `Unio.Pdf` | PDF tables | [PdfPig](https://www.nuget.org/packages/PdfPig) |
 | `Unio.Json` | JSON | None (built-in `System.Text.Json`) |

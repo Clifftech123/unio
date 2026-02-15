@@ -1,12 +1,12 @@
 # Unio.Pdf
 
-PDF table data extraction plugin for [Unio](https://www.nuget.org/packages/Unio).
+PDF table data extraction plugin for [Unio.Core](https://www.nuget.org/packages/Unio.Core).
 
 ## Installation
 
 ```bash
-dotnet add package Unio           # Required: core library
-dotnet add package Unio.Pdf       # PDF support
+dotnet add package Unio.Core         # Required: core library
+dotnet add package Unio.Pdf          # PDF support
 ```
 
 ## Usage
@@ -47,6 +47,6 @@ foreach (var invoice in invoices)
 
 ## Links
 
-- [Unio on NuGet](https://www.nuget.org/packages/Unio)
+- [Unio.Core on NuGet](https://www.nuget.org/packages/Unio.Core)
 - [GitHub Repository](https://github.com/Clifftech123/unio)
 - [Documentation](https://github.com/Clifftech123/unio/wiki)

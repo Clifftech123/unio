@@ -102,10 +102,13 @@ jobs:
           --store-password-in-clear-text \
           --name github "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json"
 
-        dotnet nuget push "./artifacts/*.nupkg" \
-          --source "github" \
-          --api-key ${{ secrets.GITHUB_TOKEN }} \
-          --skip-duplicate
+        for package in ./artifacts/*.nupkg; do
+          echo "Pushing $package..."
+          dotnet nuget push "$package" \
+            --source "github" \
+            --api-key ${{ secrets.GITHUB_TOKEN }} \
+            --skip-duplicate || echo "WARNING: Failed to push $package"
+        done
 
   publish-release:
     name: Publish to NuGet.org (Release)
@@ -127,10 +130,13 @@ jobs:
 
     - name: Publish to NuGet.org
       run: |
-        dotnet nuget push "./artifacts/*.nupkg" \
-          --source https://api.nuget.org/v3/index.json \
-          --api-key ${{ secrets.NUGET_API_KEY }} \
-          --skip-duplicate
+        for package in ./artifacts/*.nupkg; do
+          echo "Pushing $package..."
+          dotnet nuget push "$package" \
+            --source https://api.nuget.org/v3/index.json \
+            --api-key ${{ secrets.NUGET_API_KEY }} \
+            --skip-duplicate || echo "WARNING: Failed to push $package"
+        done
 
   create-release:
     name: Create GitHub Release
@@ -167,7 +173,7 @@ jobs:
 
           | Package | Description |
           |---------|-------------|
-          | `Unio` | Core library + CSV support |
+          | `Unio.Core` | Core library + CSV support |
           | `Unio.Excel` | Excel (XLSX/XLS) extraction |
           | `Unio.Json` | JSON extraction |
           | `Unio.Pdf` | PDF table extraction |
@@ -177,7 +183,7 @@ jobs:
           ### Installation
 
           ```bash
-          dotnet add package Unio              # Core + CSV
+          dotnet add package Unio.Core         # Core + CSV
           dotnet add package Unio.Excel        # Add Excel support
           dotnet add package Unio.Pdf          # Add PDF support
           dotnet add package Unio.Json         # Add JSON support

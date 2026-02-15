@@ -1,12 +1,12 @@
 # Unio.Validation
 
-Data validation plugin for [Unio](https://www.nuget.org/packages/Unio).
+Data validation plugin for [Unio.Core](https://www.nuget.org/packages/Unio.Core).
 
 ## Installation
 
 ```bash
-dotnet add package Unio                # Required: core library
-dotnet add package Unio.Validation     # Validation support
+dotnet add package Unio.Core             # Required: core library
+dotnet add package Unio.Validation       # Validation support
 ```
 
 ## Usage
@@ -59,10 +59,10 @@ var validated = employees.ValidateWith(rule => rule
 - DataAnnotations support (`[Required]`, `[Range]`, `[EmailAddress]`, etc.)
 - Fluent validation rules for custom logic
 - Three error handling strategies
-- Zero additional dependencies beyond Unio core
+- Zero additional dependencies beyond Unio.Core
 
 ## Links
 
-- [Unio on NuGet](https://www.nuget.org/packages/Unio)
+- [Unio.Core on NuGet](https://www.nuget.org/packages/Unio.Core)
 - [GitHub Repository](https://github.com/Clifftech123/unio)
 - [Documentation](https://github.com/Clifftech123/unio/wiki)
