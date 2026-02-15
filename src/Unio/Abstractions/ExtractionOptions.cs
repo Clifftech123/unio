@@ -42,6 +42,7 @@ public class ExtractionOptions
     public Func<object, IReadOnlyList<string>>? RecordValidator { get; set; }
 }
 
+/// <summary>Defines how extraction errors are handled.</summary>
 public enum ErrorHandling
 {
     /// <summary>Throw immediately on the first error.</summary>

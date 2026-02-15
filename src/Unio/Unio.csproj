@@ -1,17 +1,30 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net10.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
+    <TargetFrameworks>net8.0;net9.0;net10.0</TargetFrameworks>
+
+    <!-- NuGet Package Identity -->
+    <PackageId>Unio</PackageId>
+    <Title>Unio - One API, Every Format</Title>
+    <Description>A modern, unified C# data extraction library. Extract strongly-typed data from CSV, Excel, PDF, JSON, and XML with a single API. Features auto-format detection, attribute-based column mapping, streaming support via IAsyncEnumerable, and built-in dependency injection. Zero external dependencies for the core library.</Description>
+    <PackageTags>unio;data-extraction;csv;csv-parser;data-reader;etl;file-parsing;column-mapping;type-mapping;dotnet;csharp;streaming;ienumerable;dependency-injection</PackageTags>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 
   <ItemGroup>
     <InternalsVisibleTo Include="Unio.Tests" />
   </ItemGroup>
 
+  <!-- Package References -->
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
+    <PackageReference Include="MinVer" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" PrivateAssets="All" />
+  </ItemGroup>
+
+  <!-- Include README in NuGet package -->
+  <ItemGroup>
+    <None Include="README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
 
 </Project>

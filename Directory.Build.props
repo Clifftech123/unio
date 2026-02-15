@@ -1,14 +1,49 @@
 <Project>
+
+  <!-- Shared Compiler Settings -->
   <PropertyGroup>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <LangVersion>latest</LangVersion>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <!-- Package Identity & Metadata (shared across all src projects) -->
+  <PropertyGroup>
     <Authors>Isaiah Clifford Opoku</Authors>
     <Company>CliffTechSolutions</Company>
+    <Copyright>Copyright © Isaiah Clifford Opoku 2024-2026</Copyright>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/Clifftech123/unio</PackageProjectUrl>
     <RepositoryUrl>https://github.com/Clifftech123/unio</RepositoryUrl>
-    <PackageTags>data;extraction;excel;csv;pdf;json;xml;unified</PackageTags>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>data;extraction;excel;csv;pdf;json;xml;unified;unio;dotnet</PackageTags>
     <Description>One API, every format. Extract typed data from Excel, CSV, PDF, JSON, XML.</Description>
   </PropertyGroup>
+
+  <!-- Symbols, Source Link & Debugging -->
+  <PropertyGroup>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <DebugType>embedded</DebugType>
+  </PropertyGroup>
+
+  <!-- Build Quality -->
+  <PropertyGroup>
+    <Deterministic>true</Deterministic>
+    <ContinuousIntegrationBuild Condition="'$(CI)' == 'true'">true</ContinuousIntegrationBuild>
+  </PropertyGroup>
+
+  <!-- MinVer Configuration -->
+  <PropertyGroup>
+    <MinVerTagPrefix>v</MinVerTagPrefix>
+  </PropertyGroup>
+
+  <!-- Release Configuration -->
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+    <Optimize>true</Optimize>
+  </PropertyGroup>
+
 </Project>

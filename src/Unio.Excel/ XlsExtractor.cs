@@ -13,8 +13,10 @@ namespace Unio.Excel {
 	/// Supports streaming via SAX-like reading for large files.
 	/// </summary>
 	public class XlsxExtractor : IDataExtractor {
+		/// <inheritdoc/>
 		public IReadOnlyList<string> SupportedExtensions => new[] { ".xlsx", ".xlsm" };
 
+		/// <inheritdoc/>
 		public bool CanHandle(Stream stream, string? fileExtension = null) {
 			if (fileExtension is not null) {
 				var ext = fileExtension.ToLowerInvariant();
@@ -29,6 +31,7 @@ namespace Unio.Excel {
 			return header[0] == 0x50 && header[1] == 0x4B;
 		}
 
+		/// <inheritdoc/>
 		public IEnumerable<T> Extract<T>(Stream stream, ExtractionOptions? options = null) where T : class, new() {
 			options ??= new ExtractionOptions();
 
@@ -66,6 +69,7 @@ namespace Unio.Excel {
 			}
 		}
 
+		/// <inheritdoc/>
 		public IEnumerable<dynamic> Extract(Stream stream, ExtractionOptions? options = null) {
 			options ??= new ExtractionOptions();
 
@@ -96,6 +100,7 @@ namespace Unio.Excel {
 			}
 		}
 
+		/// <inheritdoc/>
 		public async IAsyncEnumerable<T> ExtractAsync<T>(Stream stream, ExtractionOptions? options = null,
 			[EnumeratorCancellation] CancellationToken cancellationToken = default) where T : class, new() {
 			// OpenXML SDK is synchronous, so we wrap and yield asynchronously

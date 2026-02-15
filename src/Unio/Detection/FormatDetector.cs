@@ -11,6 +11,7 @@ public static class FormatDetector {
 		private static readonly byte[] OleSignature = { 0xD0, 0xCF, 0x11, 0xE0 };  // XLS (OLE2)
 		private static readonly byte[] PdfSignature = { 0x25, 0x50, 0x44, 0x46 };  // %PDF
 
+		/// <summary>Detects the file format from extension and magic bytes.</summary>
 		public static FileFormat Detect(Stream stream, string? filePath = null) {
 			// Try extension first
 			if (filePath is not null) {
@@ -57,15 +58,25 @@ public static class FormatDetector {
 	}
 
 
+	/// <summary>Supported file formats that Unio can detect and extract.</summary>
 	public enum FileFormat {
+		/// <summary>Format could not be determined.</summary>
 		Unknown,
+		/// <summary>Comma-separated values.</summary>
 		Csv,
+		/// <summary>Tab-separated values.</summary>
 		Tsv,
+		/// <summary>Excel Open XML spreadsheet (.xlsx).</summary>
 		Xlsx,
+		/// <summary>Legacy Excel binary format (.xls).</summary>
 		Xls,
+		/// <summary>Excel binary spreadsheet (.xlsb).</summary>
 		Xlsb,
+		/// <summary>Portable Document Format (.pdf).</summary>
 		Pdf,
+		/// <summary>JavaScript Object Notation (.json).</summary>
 		Json,
+		/// <summary>Extensible Markup Language (.xml).</summary>
 		Xml
 	}
 }

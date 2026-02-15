@@ -31,7 +31,7 @@ namespace Unio.Abstractions {
 		/// </summary>
 		IAsyncEnumerable<T> ExtractAsync<T>(Stream stream, string? fileExtension = null,
 			Action<ExtractionOptions>? configure = null,
-			[EnumeratorCancellation] CancellationToken ct = default) where T : class, new();
+			CancellationToken ct = default) where T : class, new();
 
 		/// <summary>
 		/// Extract with error reporting and optional validation.

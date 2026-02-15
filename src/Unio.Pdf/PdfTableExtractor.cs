@@ -10,8 +10,8 @@ namespace Unio.Pdf {
 	/// Extracts data from PDF files using PdfPig.
 	///
 	/// Handles two content types automatically:
-	///   1. Tabular PDFs — detects column boundaries from spacing, reconstructs a table grid.
-	///   2. Plain text PDFs — extracts each line as a single-column "Text" row.
+	///   1. Tabular PDFs ï¿½ detects column boundaries from spacing, reconstructs a table grid.
+	///   2. Plain text PDFs ï¿½ extracts each line as a single-column "Text" row.
 	///
 	/// The extractor auto-detects which mode to use based on how consistent the
 	/// column structure is across rows. No configuration needed.
@@ -21,8 +21,10 @@ namespace Unio.Pdf {
 		private const double MinTableColumnConsistency = 0.5;
 		private const int MinColumnsForTable = 2;
 
+		/// <inheritdoc/>
 		public IReadOnlyList<string> SupportedExtensions => [".pdf"];
 
+		/// <inheritdoc/>
 		public bool CanHandle(Stream stream, string? fileExtension = null) {
 			if (fileExtension is not null) {
 				return fileExtension.ToLowerInvariant() is ".pdf";
@@ -38,6 +40,7 @@ namespace Unio.Pdf {
 				&& header[2] == 0x44 && header[3] == 0x46;
 		}
 
+		/// <inheritdoc/>
 		public IEnumerable<T> Extract<T>(Stream stream, ExtractionOptions? options = null) where T : class, new() {
 			options ??= new ExtractionOptions();
 
@@ -77,6 +80,7 @@ namespace Unio.Pdf {
 			}
 		}
 
+		/// <inheritdoc/>
 		public IEnumerable<dynamic> Extract(Stream stream, ExtractionOptions? options = null) {
 			options ??= new ExtractionOptions();
 
@@ -105,6 +109,7 @@ namespace Unio.Pdf {
 			}
 		}
 
+		/// <inheritdoc/>
 		public async IAsyncEnumerable<T> ExtractAsync<T>(Stream stream, ExtractionOptions? options = null,
 			[EnumeratorCancellation] CancellationToken cancellationToken = default) where T : class, new() {
 			await Task.Yield();

@@ -5,6 +5,7 @@
     <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <IsPackable>false</IsPackable>
   </PropertyGroup>
 
   <ItemGroup>
@@ -18,6 +19,12 @@
     <ProjectReference Include="..\..\src\Unio.Json\Unio.Json.csproj" />
     <ProjectReference Include="..\..\src\Unio.Xml\Unio.Xml.csproj" />
     <ProjectReference Include="..\..\src\Unio.Validation\Unio.Validation.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\tests\Unio.Tests\Data\**\*" Link="Data\%(RecursiveDir)%(Filename)%(Extension)">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

@@ -1,13 +1,30 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net10.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
+    <TargetFrameworks>net8.0;net9.0;net10.0</TargetFrameworks>
+
+    <!-- NuGet Package Identity -->
+    <PackageId>Unio.Validation</PackageId>
+    <Title>Unio.Validation - Data Validation for Unio</Title>
+    <Description>Validation plugin for the Unio library. Validate extracted data using DataAnnotations and fluent validation rules. Supports multiple error handling modes: throw on first error, skip and continue, or collect all errors. Zero additional dependencies beyond the Unio core.</Description>
+    <PackageTags>unio;validation;data-annotations;data-validation;fluent-validation;error-handling;data-extraction;dotnet;csharp</PackageTags>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 
+  <!-- Package References -->
+  <ItemGroup>
+    <PackageReference Include="MinVer" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" PrivateAssets="All" />
+  </ItemGroup>
+
+  <!-- Project References -->
   <ItemGroup>
     <ProjectReference Include="..\Unio\Unio.csproj" />
+  </ItemGroup>
+
+  <!-- Include README in NuGet package -->
+  <ItemGroup>
+    <None Include="README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
 
 </Project>

@@ -1,17 +1,31 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net10.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
+    <TargetFrameworks>net8.0;net9.0;net10.0</TargetFrameworks>
+
+    <!-- NuGet Package Identity -->
+    <PackageId>Unio.Excel</PackageId>
+    <Title>Unio.Excel - Excel Data Extraction for Unio</Title>
+    <Description>Excel (XLSX/XLS) data extraction plugin for the Unio library. Read strongly-typed data from Excel spreadsheets with automatic column mapping, sheet selection, and streaming support. Built on DocumentFormat.OpenXml for reliable, high-performance Excel processing.</Description>
+    <PackageTags>unio;excel;xlsx;xls;spreadsheet;openxml;data-extraction;excel-reader;excel-parser;dotnet;csharp</PackageTags>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 
+  <!-- Package References -->
   <ItemGroup>
     <PackageReference Include="DocumentFormat.OpenXml" />
+    <PackageReference Include="MinVer" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" PrivateAssets="All" />
   </ItemGroup>
 
+  <!-- Project References -->
   <ItemGroup>
     <ProjectReference Include="..\Unio\Unio.csproj" />
+  </ItemGroup>
+
+  <!-- Include README in NuGet package -->
+  <ItemGroup>
+    <None Include="README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
 
 </Project>

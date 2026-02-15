@@ -1,7 +1,7 @@
 
 
 namespace Unio.Abstractions
-{// <summary>
+{/// <summary>
 /// Core interface for all format-specific extractors.
 /// Each format (CSV, XLSX, PDF, etc.) implements this interface.
 /// </summary>
