@@ -162,7 +162,11 @@ namespace Unio {
 		}
 	}
 
+	/// <summary>
+	/// Thrown when no registered extractor can handle the given file format.
+	/// </summary>
 	public class UnioFormatException : Exception {
+		/// <summary>Creates a new <see cref="UnioFormatException"/> with the specified message.</summary>
 		public UnioFormatException(string message) : base(message) { }
 	}
 }

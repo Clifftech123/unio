@@ -7,12 +7,14 @@ namespace Unio.Csv;
 
 /// <summary>
 /// High-performance CSV extractor with streaming support.
-/// RFC 4180 compliant — handles multiline quoted fields.
+/// RFC 4180 compliant ï¿½ handles multiline quoted fields.
 /// Zero external dependencies.
 /// </summary>
 public class CsvExtractor : IDataExtractor {
+	/// <inheritdoc/>
 	public IReadOnlyList<string> SupportedExtensions => new[] { ".csv", ".tsv" };
 
+	/// <inheritdoc/>
 	public bool CanHandle(Stream stream, string? fileExtension = null) {
 		if (fileExtension is not null) {
 			var ext = fileExtension.ToLowerInvariant();
@@ -21,6 +23,7 @@ public class CsvExtractor : IDataExtractor {
 		return false;
 	}
 
+	/// <inheritdoc/>
 	public IEnumerable<T> Extract<T>(Stream stream, ExtractionOptions? options = null) where T : class, new() {
 		options ??= new ExtractionOptions();
 		var delimiter = ResolveDelimiter(options);
@@ -57,6 +60,7 @@ public class CsvExtractor : IDataExtractor {
 		}
 	}
 
+	/// <inheritdoc/>
 	public IEnumerable<dynamic> Extract(Stream stream, ExtractionOptions? options = null) {
 		options ??= new ExtractionOptions();
 		var delimiter = ResolveDelimiter(options);
@@ -96,6 +100,7 @@ public class CsvExtractor : IDataExtractor {
 		}
 	}
 
+	/// <inheritdoc/>
 	public async IAsyncEnumerable<T> ExtractAsync<T>(Stream stream, ExtractionOptions? options = null,
 		[EnumeratorCancellation] CancellationToken cancellationToken = default) where T : class, new() {
 		options ??= new ExtractionOptions();

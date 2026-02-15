@@ -1,0 +1,191 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ develop, main ]
+    tags:
+      - 'v*'
+  pull_request:
+    branches: [ develop, main ]
+
+env:
+  DOTNET_VERSION: '10.0.x'
+  CONFIGURATION: Release
+  DOTNET_NOLOGO: true
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+  MINVERBUILDMETADATA: build.${{ github.run_number }}
+
+jobs:
+  build-and-test:
+    name: Build and Test
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v5
+      with:
+        fetch-depth: 0  # Full history for MinVer versioning
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+
+    - name: Restore dependencies
+      run: dotnet restore
+
+    - name: Build solution
+      run: dotnet build --configuration ${{ env.CONFIGURATION }} --no-restore
+
+    - name: Run unit tests
+      run: dotnet test tests/Unio.Tests/Unio.Tests.csproj --configuration ${{ env.CONFIGURATION }} --no-build --verbosity normal --logger "trx;LogFileName=unit-test-results.trx" --collect:"XPlat Code Coverage"
+
+    - name: Run integration tests
+      run: dotnet test tests/Unio.Tests.Integration/Unio.Tests.Integration.csproj --configuration ${{ env.CONFIGURATION }} --no-build --verbosity normal --logger "trx;LogFileName=integration-test-results.trx"
+
+    - name: Upload test results
+      if: always()
+      uses: actions/upload-artifact@v5
+      with:
+        name: test-results
+        path: '**/TestResults/*.trx'
+
+    - name: Upload code coverage
+      if: always()
+      uses: actions/upload-artifact@v5
+      with:
+        name: code-coverage
+        path: '**/TestResults/**/coverage.cobertura.xml'
+
+    - name: Pack NuGet packages
+      if: github.event_name == 'push' && (github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v'))
+      run: |
+        dotnet pack src/Unio/Unio.csproj --configuration ${{ env.CONFIGURATION }} --no-build --output ./artifacts
+        dotnet pack src/Unio.Excel/Unio.Excel.csproj --configuration ${{ env.CONFIGURATION }} --no-build --output ./artifacts
+        dotnet pack src/Unio.Json/Unio.Json.csproj --configuration ${{ env.CONFIGURATION }} --no-build --output ./artifacts
+        dotnet pack src/Unio.Pdf/Unio.Pdf.csproj --configuration ${{ env.CONFIGURATION }} --no-build --output ./artifacts
+        dotnet pack src/Unio.Xml/Unio.Xml.csproj --configuration ${{ env.CONFIGURATION }} --no-build --output ./artifacts
+        dotnet pack src/Unio.Validation/Unio.Validation.csproj --configuration ${{ env.CONFIGURATION }} --no-build --output ./artifacts
+
+    - name: Upload NuGet artifacts
+      if: github.event_name == 'push' && (github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v'))
+      uses: actions/upload-artifact@v5
+      with:
+        name: nuget-packages
+        path: ./artifacts/*.nupkg
+
+  publish-develop:
+    name: Publish to GitHub Packages (Develop)
+    needs: build-and-test
+    if: github.event_name == 'push' && github.ref == 'refs/heads/develop'
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+      contents: read
+
+    steps:
+    - name: Download NuGet artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: nuget-packages
+        path: ./artifacts
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+
+    - name: Publish to GitHub Packages
+      run: |
+        dotnet nuget add source --username ${{ github.repository_owner }} \
+          --password ${{ secrets.GITHUB_TOKEN }} \
+          --store-password-in-clear-text \
+          --name github "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json"
+
+        dotnet nuget push "./artifacts/*.nupkg" \
+          --source "github" \
+          --api-key ${{ secrets.GITHUB_TOKEN }} \
+          --skip-duplicate
+
+  publish-release:
+    name: Publish to NuGet.org (Release)
+    needs: build-and-test
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Download NuGet artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: nuget-packages
+        path: ./artifacts
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+
+    - name: Publish to NuGet.org
+      run: |
+        dotnet nuget push "./artifacts/*.nupkg" \
+          --source https://api.nuget.org/v3/index.json \
+          --api-key ${{ secrets.NUGET_API_KEY }} \
+          --skip-duplicate
+
+  create-release:
+    name: Create GitHub Release
+    needs: publish-release
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v5
+
+    - name: Download NuGet artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: nuget-packages
+        path: ./artifacts
+
+    - name: Extract version from tag
+      id: version
+      run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+
+    - name: Create Release
+      uses: softprops/action-gh-release@v2
+      with:
+        name: Release ${{ steps.version.outputs.VERSION }}
+        body: |
+          ## Unio v${{ steps.version.outputs.VERSION }}
+
+          **One API, every format.** Extract typed data from Excel, CSV, PDF, JSON, and XML in C#.
+
+          ### NuGet Packages
+
+          | Package | Description |
+          |---------|-------------|
+          | `Unio` | Core library + CSV support |
+          | `Unio.Excel` | Excel (XLSX/XLS) extraction |
+          | `Unio.Json` | JSON extraction |
+          | `Unio.Pdf` | PDF table extraction |
+          | `Unio.Xml` | XML extraction |
+          | `Unio.Validation` | Data validation |
+
+          ### Installation
+
+          ```bash
+          dotnet add package Unio              # Core + CSV
+          dotnet add package Unio.Excel        # Add Excel support
+          dotnet add package Unio.Pdf          # Add PDF support
+          dotnet add package Unio.Json         # Add JSON support
+          dotnet add package Unio.Xml          # Add XML support
+          dotnet add package Unio.Validation   # Add validation support
+          ```
+        files: ./artifacts/*.nupkg
+        draft: false
+        prerelease: false
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -11,8 +11,10 @@ namespace Unio.Xml {
 	/// and maps their child element/attribute values as columns.
 	/// </summary>
 	public class XmlExtractor : IDataExtractor {
+		/// <inheritdoc/>
 		public IReadOnlyList<string> SupportedExtensions => new[] { ".xml" };
 
+		/// <inheritdoc/>
 		public bool CanHandle(Stream stream, string? fileExtension = null) {
 			if (fileExtension is not null) {
 				return fileExtension.ToLowerInvariant() is ".xml";
@@ -29,6 +31,7 @@ namespace Unio.Xml {
 			return firstByte == '<';
 		}
 
+		/// <inheritdoc/>
 		public IEnumerable<T> Extract<T>(Stream stream, ExtractionOptions? options = null) where T : class, new() {
 			options ??= new ExtractionOptions();
 
@@ -53,6 +56,7 @@ namespace Unio.Xml {
 			}
 		}
 
+		/// <inheritdoc/>
 		public IEnumerable<dynamic> Extract(Stream stream, ExtractionOptions? options = null) {
 			options ??= new ExtractionOptions();
 
@@ -80,6 +84,7 @@ namespace Unio.Xml {
 			}
 		}
 
+		/// <inheritdoc/>
 		public async IAsyncEnumerable<T> ExtractAsync<T>(Stream stream, ExtractionOptions? options = null,
 			[EnumeratorCancellation] CancellationToken cancellationToken = default) where T : class, new() {
 			await Task.Yield();
@@ -125,7 +130,7 @@ namespace Unio.Xml {
 					return innerGroups[0].ToList();
 				}
 
-				// Single wrapper with diverse children — treat wrapper children as rows
+				// Single wrapper with diverse children ï¿½ treat wrapper children as rows
 				if (wrapper.HasElements) {
 					return wrapper.Elements().ToList();
 				}

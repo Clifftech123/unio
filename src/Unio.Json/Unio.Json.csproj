@@ -1,15 +1,30 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net10.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
+    <TargetFrameworks>net8.0;net9.0;net10.0</TargetFrameworks>
+
+    <!-- NuGet Package Identity -->
+    <PackageId>Unio.Json</PackageId>
+    <Title>Unio.Json - JSON Data Extraction for Unio</Title>
+    <Description>JSON data extraction plugin for the Unio library. Extract strongly-typed data from JSON arrays and objects with automatic property mapping. Built on System.Text.Json with zero additional dependencies beyond the Unio core.</Description>
+    <PackageTags>unio;json;json-parser;json-reader;data-extraction;system-text-json;deserialization;dotnet;csharp</PackageTags>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 
+  <!-- Package References -->
+  <ItemGroup>
+    <PackageReference Include="MinVer" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" PrivateAssets="All" />
+  </ItemGroup>
+
+  <!-- Project References -->
   <ItemGroup>
     <ProjectReference Include="..\Unio\Unio.csproj" />
   </ItemGroup>
 
-
+  <!-- Include README in NuGet package -->
+  <ItemGroup>
+    <None Include="README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
 
 </Project>

@@ -1,13 +1,30 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net10.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
+    <TargetFrameworks>net8.0;net9.0;net10.0</TargetFrameworks>
+
+    <!-- NuGet Package Identity -->
+    <PackageId>Unio.Xml</PackageId>
+    <Title>Unio.Xml - XML Data Extraction for Unio</Title>
+    <Description>XML data extraction plugin for the Unio library. Extract strongly-typed data from XML documents with element and XPath-based extraction. Built on System.Xml.Linq with zero additional dependencies beyond the Unio core.</Description>
+    <PackageTags>unio;xml;xml-parser;xml-reader;xpath;data-extraction;linq-to-xml;dotnet;csharp</PackageTags>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 
+  <!-- Package References -->
+  <ItemGroup>
+    <PackageReference Include="MinVer" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" PrivateAssets="All" />
+  </ItemGroup>
+
+  <!-- Project References -->
   <ItemGroup>
     <ProjectReference Include="..\Unio\Unio.csproj" />
+  </ItemGroup>
+
+  <!-- Include README in NuGet package -->
+  <ItemGroup>
+    <None Include="README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
 
 </Project>

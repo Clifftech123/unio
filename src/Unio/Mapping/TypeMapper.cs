@@ -13,6 +13,7 @@ namespace Unio.Mapping {
 		private readonly PropertyMapping[] _mappings;
 		private readonly CultureInfo _culture;
 
+		/// <summary>Creates a new mapper using the given column headers and culture.</summary>
 		public TypeMapper(string[]? headers, CultureInfo? culture = null) {
 			_culture = culture ?? CultureInfo.InvariantCulture;
 			_mappings = BuildMappings(headers);
@@ -48,10 +49,8 @@ namespace Unio.Mapping {
 		}
 
 		/// <summary>
-		/// Builds the property mappings based on the target type's properties, the provided headers, and any mapping attributes. It iterates over all writable properties, checks for IgnoreAttribute, and then creates a PropertyMapping for each using CreatePropertyMapping. The resulting array of mappings is used for efficient mapping during extraction.
+		/// Builds the property mappings based on the target type's properties and the provided headers.
 		/// </summary>
-		/// <param name="headers"></param>
-		/// <returns></returns>
 		private static PropertyMapping[] BuildMappings(string[]? headers) {
 			var properties = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance)
 				.Where(p => p.CanWrite)
@@ -73,11 +72,8 @@ namespace Unio.Mapping {
 		}
 
 		/// <summary>
-		/// Creates a PropertyMapping for a given property, determining the column index and name based on attributes and headers. It first checks for a ColumnAttribute, then tries to match by name if headers are available, and finally falls back to convention-based matching. Returns null if no valid mapping can be created (e.g., column index out of range).
+		/// Creates a PropertyMapping for a given property, determining the column index and name based on attributes and headers.
 		/// </summary>
-		/// <param name="prop"></param>
-		/// <param name="headers"></param>
-		/// <returns></returns>
 		private static PropertyMapping? CreatePropertyMapping(PropertyInfo prop, string[]? headers, int autoIndex) {
 			var colAttr = prop.GetCustomAttribute<ColumnAttribute>();
 			var dateAttr = prop.GetCustomAttribute<DateFormatAttribute>();
@@ -96,12 +92,8 @@ namespace Unio.Mapping {
 		}
 
 		/// <summary>
-		/// Resolves the column index and name for a property based on the ColumnAttribute and headers. It first checks for explicit index, then name matching, and finally falls back to convention-based matching if no attribute is present. Returns -1 if no match is found.
+		/// Resolves the column index and name for a property based on the ColumnAttribute and headers.
 		/// </summary>
-		/// <param name="prop"></param>
-		/// <param name="colAttr"></param>
-		/// <param name="headers"></param>
-		/// <returns></returns>
 		private static (int index, string? name) ResolveColumnIndexAndName(PropertyInfo prop, ColumnAttribute? colAttr, string[]? headers, int autoIndex) {
 			int index = -1;
 			string? name = null;
@@ -122,7 +114,7 @@ namespace Unio.Mapping {
 				index = FindHeaderIndex(headers, prop.Name);
 			}
 			else {
-				// No headers, no attribute — map by property declaration order
+				// No headers, no attribute ï¿½ map by property declaration order
 				index = autoIndex;
 				name = prop.Name;
 			}
@@ -130,23 +122,15 @@ namespace Unio.Mapping {
 			return (index, name);
 		}
 		/// <summary>
-		/// Finds the column index in the headers array that matches the given name, using case-insensitive comparison and some normalization for common variations (spaces, underscores). Returns -1 if not found.
+		/// Finds the column index in the headers array that matches the given name.
 		/// </summary>
-		/// <param name="headers"></param>
-		/// <param name="name"></param>
-		/// <returns></returns>
-
 		private static int FindHeaderIndex(string[] headers, string name) {
 			return HeaderMatcher.FindIndex(headers, name);
 		}
 
 		/// <summary>
-		/// Converts a raw value to the target property type, handling nullable types, enums, and using culture-aware parsing for numbers and dates. Also supports custom date formats via attributes.
+		/// Converts a raw value to the target property type.
 		/// </summary>
-		/// <param name="raw"></param>
-		/// <param name="targetType"></param>
-		/// <param name="dateFormat"></param>
-		/// <returns></returns>
 		private object? ConvertValue(object raw, Type targetType, string? dateFormat) {
 			// Handle nullable types
 			var underlying = Nullable.GetUnderlyingType(targetType) ?? targetType;
@@ -174,11 +158,8 @@ namespace Unio.Mapping {
 
 
 		/// <summary>
-		/// Converts numeric types and other common types like DateTimeOffset and Guid, using culture-aware parsing where applicable.
+		/// Converts numeric types and other common types using culture-aware parsing.
 		/// </summary>
-		/// <param name="str"></param>
-		/// <param name="underlying"></param>
-		/// <returns></returns>
 		private object ConvertNumericOrOther(string str, Type underlying) {
 			if (underlying == typeof(int))
 				return int.Parse(CleanNumericString(str), NumberStyles.Any, _culture);
@@ -210,19 +191,15 @@ namespace Unio.Mapping {
 		/// </summary>
 		private static string CleanNumericString(string value) {
 			var span = value.AsSpan().Trim();
-			while (span.Length > 0 && (span[0] == '$' || span[0] == '€' || span[0] == '£' || span[0] == '¥'))
+			while (span.Length > 0 && (span[0] == '$' || span[0] == 'ï¿½' || span[0] == 'ï¿½' || span[0] == 'ï¿½'))
 				span = span[1..].TrimStart();
 			return span.ToString();
 		}
 
 
 		/// <summary>
-		///    Converts date values, handling both string representations and Excel's OADate format.
+		/// Converts date values, handling both string representations and Excel's OADate format.
 		/// </summary>
-		/// <param name="raw"></param>
-		/// <param name="str"></param>
-		/// <param name="dateFormat"></param>
-		/// <returns></returns>
 		private object ConvertToDateTime(object raw, string str, string? dateFormat) {
 			if (dateFormat is not null)
 				return DateTime.ParseExact(str, dateFormat, _culture);
@@ -234,10 +211,8 @@ namespace Unio.Mapping {
 		}
 
 		/// <summary>
-		///  Parses boolean values from various common representations.
+		/// Parses boolean values from various common representations.
 		/// </summary>
-		/// <param name="value"></param>
-		/// <returns></returns>
 		private static bool ParseBool(string value) {
 			return value.ToLowerInvariant() switch {
 				"true" or "1" or "yes" or "y" or "on" => true,
@@ -262,7 +237,9 @@ namespace Unio.Mapping {
 	/// Custom exception type for mapping errors, providing detailed context about the failure.
 	/// </summary>
 
+	/// <inheritdoc/>
 	public class UnioMappingException : Exception {
+		/// <summary>Creates a new <see cref="UnioMappingException"/> with the specified message.</summary>
 		public UnioMappingException(string message, Exception? inner = null)
 			: base(message, inner) { }
 	}

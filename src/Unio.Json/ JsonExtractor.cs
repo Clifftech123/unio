@@ -11,8 +11,10 @@ namespace Unio.Json {
 	/// Uses System.Text.Json for high-performance parsing.
 	/// </summary>
 	public class JsonExtractor : IDataExtractor {
+		/// <inheritdoc/>
 		public IReadOnlyList<string> SupportedExtensions => new[] { ".json" };
 
+		/// <inheritdoc/>
 		public bool CanHandle(Stream stream, string? fileExtension = null) {
 			if (fileExtension is not null) {
 				return fileExtension.ToLowerInvariant() is ".json";
@@ -29,6 +31,7 @@ namespace Unio.Json {
 			return firstByte is '{' or '[';
 		}
 
+		/// <inheritdoc/>
 		public IEnumerable<T> Extract<T>(Stream stream, ExtractionOptions? options = null) where T : class, new() {
 			options ??= new ExtractionOptions();
 
@@ -57,6 +60,7 @@ namespace Unio.Json {
 			}
 		}
 
+		/// <inheritdoc/>
 		public IEnumerable<dynamic> Extract(Stream stream, ExtractionOptions? options = null) {
 			options ??= new ExtractionOptions();
 
@@ -80,6 +84,7 @@ namespace Unio.Json {
 			}
 		}
 
+		/// <inheritdoc/>
 		public async IAsyncEnumerable<T> ExtractAsync<T>(Stream stream, ExtractionOptions? options = null,
 			[EnumeratorCancellation] CancellationToken cancellationToken = default) where T : class, new() {
 			await Task.Yield();
@@ -115,7 +120,7 @@ namespace Unio.Json {
 					return arrayProp.Value.EnumerateArray().Select(e => e.Clone()).ToList();
 				}
 
-				// Single object — treat as one-row result
+				// Single object ï¿½ treat as one-row result
 				return [root.Clone()];
 			}
 

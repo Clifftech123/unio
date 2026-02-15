@@ -1,2 +1,4 @@
-﻿// See https://aka.ms/new-console-template for more information
-Console.WriteLine("Hello, World!");
+using BenchmarkDotNet.Running;
+using Unio.Benchmarks;
+
+BenchmarkSwitcher.FromAssembly(typeof(ExtractionBenchmarks).Assembly).Run(args);

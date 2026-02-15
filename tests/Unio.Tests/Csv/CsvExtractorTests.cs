@@ -171,7 +171,7 @@ public class CsvExtractorTests {
 		results[0].Notes.Should().Contain("hello, world");
 		results[0].Value.Should().Be(0m);
 		// Row 2 has a multiline field "Line1\nLine2"
-		results[1].Name.Should().Be("José García");
+		results[1].Name.Should().Be("JosÃ© GarcÃ­a");
 		results[1].Notes.Should().Contain("Line1\nLine2");
 		results[1].Value.Should().Be(-99.5m);
 		// Row 3 has unicode

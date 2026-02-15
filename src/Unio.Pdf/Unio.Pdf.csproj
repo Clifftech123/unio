@@ -1,17 +1,31 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net10.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
+    <TargetFrameworks>net8.0;net9.0;net10.0</TargetFrameworks>
+
+    <!-- NuGet Package Identity -->
+    <PackageId>Unio.Pdf</PackageId>
+    <Title>Unio.Pdf - PDF Table Extraction for Unio</Title>
+    <Description>PDF table data extraction plugin for the Unio library. Extract strongly-typed data from PDF tables with automatic column detection and row parsing. Built on PdfPig for reliable, open-source PDF processing without commercial dependencies.</Description>
+    <PackageTags>unio;pdf;pdf-reader;pdf-parser;pdf-table;table-extraction;data-extraction;pdfpig;dotnet;csharp</PackageTags>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 
+  <!-- Package References -->
+  <ItemGroup>
+    <PackageReference Include="PdfPig" />
+    <PackageReference Include="MinVer" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" PrivateAssets="All" />
+  </ItemGroup>
+
+  <!-- Project References -->
   <ItemGroup>
     <ProjectReference Include="..\Unio\Unio.csproj" />
   </ItemGroup>
 
+  <!-- Include README in NuGet package -->
   <ItemGroup>
-    <PackageReference Include="PdfPig" />
+    <None Include="README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
 
 </Project>

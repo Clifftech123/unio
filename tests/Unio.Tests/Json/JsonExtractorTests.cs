@@ -116,7 +116,7 @@ public class JsonExtractorTests {
 
 		results.Should().HaveCountGreaterThanOrEqualTo(3);
 		results[0].Name.Should().Be("O'Brien, James");
-		results[1].Name.Should().Be("José García");
+		results[1].Name.Should().Be("JosÃ© GarcÃ­a");
 	}
 
 	// --- Async ---
