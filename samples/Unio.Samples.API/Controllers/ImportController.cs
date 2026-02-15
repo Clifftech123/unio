@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Unio.Abstractions;
 using Unio.Samples.API.Data;
 using Unio.Samples.API.Models;
 
@@ -7,10 +8,10 @@ namespace Unio.Samples.API.Controllers;
 [ApiController]
 [Route("api/[controller]")]
 public class ImportController : ControllerBase {
-	private readonly Unio _unio;
+	private readonly IUnioExtractor _unio;
 	private readonly AppDbContext _db;
 
-	public ImportController(Unio unio, AppDbContext db) {
+	public ImportController(IUnioExtractor unio, AppDbContext db) {
 		_unio = unio;
 		_db = db;
 	}
