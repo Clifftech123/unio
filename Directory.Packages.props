@@ -23,7 +23,7 @@
     <PackageVersion Include="BenchmarkDotNet" Version="0.15.8" />
 
     <!-- Samples -->
-    <PackageVersion Include="Scalar.AspNetCore" Version="2.12.40" />
+    <PackageVersion Include="Scalar.AspNetCore" Version="2.12.41" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Sqlite" Version="10.0.3" />
     <PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="10.0.3" />
   </ItemGroup>
