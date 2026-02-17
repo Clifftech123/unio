@@ -31,7 +31,13 @@ namespace Unio.Json {
 			return firstByte is '{' or '[';
 		}
 
-		/// <inheritdoc/>
+		/// <summary>
+		/// Extracts data from the provided stream, mapping rows to instances of T.
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="stream"></param>
+		/// <param name="options"></param>
+		/// <returns></returns>
 		public IEnumerable<T> Extract<T>(Stream stream, ExtractionOptions? options = null) where T : class, new() {
 			options ??= new ExtractionOptions();
 
@@ -60,7 +66,12 @@ namespace Unio.Json {
 			}
 		}
 
-		/// <inheritdoc/>
+	 /// <summary>
+	 /// Extracts data from the provided stream, mapping rows to dynamic objects (ExpandoObject).
+	 /// </summary>
+	 /// <param name="stream"></param>
+	 /// <param name="options"></param>
+	 /// <returns></returns>
 		public IEnumerable<dynamic> Extract(Stream stream, ExtractionOptions? options = null) {
 			options ??= new ExtractionOptions();
 
@@ -120,7 +131,7 @@ namespace Unio.Json {
 					return arrayProp.Value.EnumerateArray().Select(e => e.Clone()).ToList();
 				}
 
-				// Single object � treat as one-row result
+				// Single object  treat as one-row result
 				return [root.Clone()];
 			}
 

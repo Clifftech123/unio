@@ -2,9 +2,12 @@
 
 **One API, every format.** Extract typed data from Excel, CSV, PDF, JSON, and XML in C#.
 
-[![NuGet](https://img.shields.io/badge/nuget-1.0.0-blue?style=flat-square&logo=nuget)](https://www.nuget.org/packages/Unio.Core)
-[![License](https://img.shields.io/badge/license-MIT-green?style=flat-square)](https://github.com/Clifftech123/unio/blob/main/LICENSE)
-![.NET](https://img.shields.io/badge/.NET-8.0%20|%209.0%20|%2010.0-512BD4?style=flat-square&logo=dotnet)
+[![CI/CD Pipeline](https://github.com/Clifftech123/unio/actions/workflows/ci.yml/badge.svg)](https://github.com/Clifftech123/unio/actions/workflows/ci.yml)
+[![CodeQL](https://github.com/Clifftech123/unio/actions/workflows/codeql.yml/badge.svg)](https://github.com/Clifftech123/unio/actions/workflows/codeql.yml)
+[![NuGet](https://img.shields.io/nuget/v/Unio.Core?label=NuGet&logo=nuget)](https://www.nuget.org/packages/Unio.Core)
+[![NuGet Downloads](https://img.shields.io/nuget/dt/Unio.Core?label=Downloads&logo=nuget)](https://www.nuget.org/packages/Unio.Core)
+[![License](https://img.shields.io/github/license/Clifftech123/unio)](https://github.com/Clifftech123/unio/blob/main/LICENSE)
+![.NET](https://img.shields.io/badge/.NET-10.0-512BD4?logo=dotnet)
 
 ---
 
@@ -31,9 +34,12 @@ Same call. Same result. Format is auto-detected.
 Install the core package and add only the formats you need:
 
 ```bash
-dotnet add package Unio.Core         # Core + CSV
-dotnet add package Unio.Excel        # Add Excel support
-dotnet add package Unio.Pdf          # Add PDF support
+dotnet add package Unio.Core           # Core + CSV
+dotnet add package Unio.Excel          # Add Excel support
+dotnet add package Unio.Pdf            # Add PDF support
+dotnet add package Unio.Json           # Add JSON support
+dotnet add package Unio.Xml            # Add XML support
+dotnet add package Unio.Validation     # Add validation support
 ```
 
 The core package has **zero external dependencies**.
@@ -128,14 +134,14 @@ public class ReportService(IUnioExtractor extractor)
 
 ## Packages
 
-| Package | Format | External Dependencies |
-|:---|:---|:---|
-| `Unio.Core` | CSV | None (+ `Microsoft.Extensions.DependencyInjection.Abstractions`) |
-| `Unio.Excel` | XLSX, XLS | [DocumentFormat.OpenXml](https://www.nuget.org/packages/DocumentFormat.OpenXml) |
-| `Unio.Pdf` | PDF tables | [PdfPig](https://www.nuget.org/packages/PdfPig) |
-| `Unio.Json` | JSON | None (built-in `System.Text.Json`) |
-| `Unio.Xml` | XML | None (built-in `System.Xml.Linq`) |
-| `Unio.Validation` | -- | None (built-in `System.ComponentModel.DataAnnotations`) |
+| Package | Version | Downloads | Format | Dependencies |
+|:---|:---|:---|:---|:---|
+| [Unio.Core](https://www.nuget.org/packages/Unio.Core) | [![NuGet](https://img.shields.io/nuget/v/Unio.Core)](https://www.nuget.org/packages/Unio.Core) | [![Downloads](https://img.shields.io/nuget/dt/Unio.Core)](https://www.nuget.org/packages/Unio.Core) | CSV | None |
+| [Unio.Excel](https://www.nuget.org/packages/Unio.Excel) | [![NuGet](https://img.shields.io/nuget/v/Unio.Excel)](https://www.nuget.org/packages/Unio.Excel) | [![Downloads](https://img.shields.io/nuget/dt/Unio.Excel)](https://www.nuget.org/packages/Unio.Excel) | XLSX, XLS | [DocumentFormat.OpenXml](https://www.nuget.org/packages/DocumentFormat.OpenXml) |
+| [Unio.Pdf](https://www.nuget.org/packages/Unio.Pdf) | [![NuGet](https://img.shields.io/nuget/v/Unio.Pdf)](https://www.nuget.org/packages/Unio.Pdf) | [![Downloads](https://img.shields.io/nuget/dt/Unio.Pdf)](https://www.nuget.org/packages/Unio.Pdf) | PDF tables | [PdfPig](https://www.nuget.org/packages/PdfPig) |
+| [Unio.Json](https://www.nuget.org/packages/Unio.Json) | [![NuGet](https://img.shields.io/nuget/v/Unio.Json)](https://www.nuget.org/packages/Unio.Json) | [![Downloads](https://img.shields.io/nuget/dt/Unio.Json)](https://www.nuget.org/packages/Unio.Json) | JSON | None (`System.Text.Json`) |
+| [Unio.Xml](https://www.nuget.org/packages/Unio.Xml) | [![NuGet](https://img.shields.io/nuget/v/Unio.Xml)](https://www.nuget.org/packages/Unio.Xml) | [![Downloads](https://img.shields.io/nuget/dt/Unio.Xml)](https://www.nuget.org/packages/Unio.Xml) | XML | None (`System.Xml.Linq`) |
+| [Unio.Validation](https://www.nuget.org/packages/Unio.Validation) | [![NuGet](https://img.shields.io/nuget/v/Unio.Validation)](https://www.nuget.org/packages/Unio.Validation) | [![Downloads](https://img.shields.io/nuget/dt/Unio.Validation)](https://www.nuget.org/packages/Unio.Validation) | -- | None (`DataAnnotations`) |
 
 ---
 
