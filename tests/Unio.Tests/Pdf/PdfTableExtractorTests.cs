@@ -47,7 +47,7 @@ public class PdfTableExtractorTests {
 		stream.Position.Should().Be(0);
 	}
 
-	// --- Extract employees.pdf (dynamic only — complex multi-table layout) ---
+	// --- Extract employees.pdf (dynamic only ï¿½ complex multi-table layout) ---
 
 	[Fact]
 	public void Extract_EmployeesPdf_Dynamic_ReturnsRows() {

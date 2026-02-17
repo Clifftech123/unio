@@ -31,7 +31,14 @@ namespace Unio.Excel {
 			return header[0] == 0x50 && header[1] == 0x4B;
 		}
 
-		/// <inheritdoc/>
+		/// <summary>
+		/// Extracts data from the provided stream, mapping rows to instances of T.
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="stream"></param>
+		/// <param name="options"></param>
+		/// <returns></returns>
+		/// <exception cref="InvalidOperationException"></exception>
 		public IEnumerable<T> Extract<T>(Stream stream, ExtractionOptions? options = null) where T : class, new() {
 			options ??= new ExtractionOptions();
 
@@ -69,7 +76,13 @@ namespace Unio.Excel {
 			}
 		}
 
-		/// <inheritdoc/>
+		/// <summary>
+		/// Extracts data from the provided stream, mapping rows to dynamic objects (ExpandoObject).
+		/// </summary>
+		/// <param name="stream"></param>
+		/// <param name="options"></param>
+		/// <returns></returns>
+		/// <exception cref="InvalidOperationException"></exception>
 		public IEnumerable<dynamic> Extract(Stream stream, ExtractionOptions? options = null) {
 			options ??= new ExtractionOptions();
 
@@ -113,6 +126,14 @@ namespace Unio.Excel {
 		}
 
 
+        
+		/// <summary>
+		/// Resolves the target sheet based on options (name or index).
+		/// </summary>
+		/// <param name="workbookPart"></param>
+		/// <param name="options"></param>
+		/// <returns></returns>
+		/// <exception cref="InvalidOperationException"></exception>
 
 		private static Sheet ResolveSheet(WorkbookPart workbookPart, ExtractionOptions options) {
 			var sheets = workbookPart.Workbook?.Sheets?.Elements<Sheet>().ToList()
@@ -144,7 +165,15 @@ namespace Unio.Excel {
 
 			return values;
 		}
+ 
 
+
+           /// <summary>
+		   /// Extracts the actual value from a Cell, handling different data types and shared strings.
+		   /// </summary>
+		   /// <param name="cell"></param>
+		   /// <param name="sharedStrings"></param>
+		   /// <returns></returns>
 		private static object? GetCellValue(Cell cell, SharedStringTable? sharedStrings) {
 			// Handle InlineString cells (value stored in cell.InlineString, not cell.CellValue)
 			if (cell.DataType?.Value == CellValues.InlineString) {
